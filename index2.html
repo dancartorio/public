@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Título do Post - Nome do Blog</title>
+    <style>
+        :root {
+            --primary-color: #1a1a1a;
+            --secondary-color: #2d2d2d;
+            --accent-color: #4d8bf0;
+            --text-color: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --gradient-height: 100px;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        /* Header Visual */
+        .header-visual {
+            width: 100%;
+            height: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .header-gradient {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: var(--gradient-height);
+            background: linear-gradient(to bottom, transparent 0%, var(--primary-color) 100%);
+        }
+        
+        /* Title Section */
+        .title-container {
+            max-width: 800px;
+            margin: -80px auto 0;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .post-title {
+            font-size: 2.8rem;
+            margin: 0 0 20px;
+            font-weight: 700;
+            line-height: 1.2;
+            color: white;
+        }
+        
+        /* Meta Information */
+        .meta-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 40px;
+            color: var(--text-muted);
+        }
+        
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+            object-fit: cover;
+            border: 2px solid var(--accent-color);
+        }
+        
+        .author-name {
+            font-weight: 600;
+            color: var(--text-color);
+            margin-right: 15px;
+        }
+        
+        .publish-date {
+            font-size: 0.9rem;
+        }
+        
+        /* Content */
+        .content-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px 60px;
+            display: flex;
+            flex-direction: row;
+            position: relative;
+        }
+        
+        .post-content {
+            flex: 1;
+            font-size: 1.1rem;
+            padding-right: 0;
+        }
+        
+        .post-content h2 {
+            font-size: 1.8rem;
+            margin-top: 40px;
+            color: var(--accent-color);
+        }
+        
+        .post-content h3 {
+            font-size: 1.4rem;
+            margin-top: 30px;
+        }
+        
+        .post-content p {
+            margin-bottom: 20px;
+        }
+        
+        .post-content a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+        
+        .post-content a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Social Share Bar */
+        .social-share {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+            margin-left: 24px;
+            padding-top: 10px;
+            min-width: 48px;
+        }
+        
+        .social-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 8px; /* leve arredondamento, não circular */
+            background: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-color);
+            font-size: 1.5rem;
+            font-weight: bold;
+            box-shadow: 0 2px 8px 0 rgba(0,0,0,0.10);
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s, transform 0.2s;
+            border: 1.5px solid var(--primary-color);
+            margin: 0;
+        }
+        
+        .social-icon:hover {
+            background: var(--accent-color);
+            color: #fff;
+            transform: translateX(-6px) scale(1.08);
+            border-color: var(--accent-color);
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 1024px) {
+            .social-share {
+                left: 10px;
+            }
+            .content-container {
+                flex-direction: column;
+                max-width: 100%;
+            }
+            .social-share {
+                flex-direction: row;
+                align-items: center;
+                justify-content: flex-start;
+                margin: 0 0 16px 0;
+                padding: 0;
+                gap: 8px;
+            }
+            .post-content {
+                padding-right: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-visual {
+                height: 300px;
+            }
+            
+            .post-title {
+                font-size: 2.2rem;
+            }
+            
+            .social-share {
+                position: static;
+                flex-direction: row;
+                justify-content: center;
+                transform: none;
+                margin: 30px 0;
+            }
+            
+            .social-icon {
+                margin: 0 8px;
+            }
+            .social-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 1.1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header-visual {
+                height: 250px;
+            }
+            
+            .post-title {
+                font-size: 1.8rem;
+            }
+            
+            .meta-info {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Visual -->
+    <div class="header-visual">
+        <img src="https://images.ctfassets.net/w5r1fvmogo3f/6X5Egp86wXFRXlvfZ0rEl9/285c7791d57fd9c9e7fe5885902c23cf/BlogPost_Best_Gifts_for_Gamers_ANPW_img_2.jpg?fm=webp&q=90&fit=scale&w=1600" alt="Capa do post" class="header-image">
+        <div class="header-gradient"></div>
+    </div>
+    
+    <!-- Title Section -->
+    <div class="title-container">
+        <h1 class="post-title">Título Impactante do Artigo do Blog</h1>
+        
+        <!-- Meta Information -->
+        <div class="meta-info">
+            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Autor" class="author-avatar">
+            <span class="author-name">João Silva</span>
+            <span class="publish-date">Publicado em 15 de Maio, 2023</span>
+        </div>
+    </div>
+    
+    <!-- Content -->
+    <div class="content-container">
+        <article class="post-content">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in dui mauris. Vivamus hendrerit arcu sed erat molestie vehicula. Sed auctor neque eu tellus rhoncus ut eleifend nibh porttitor. Ut in nulla enim. Phasellus molestie magna non est bibendum non venenatis nisl tempor.</p>
+            
+            <h2>Subtítulo Importante</h2>
+            <p>Suspendisse potenti. Sed egestas, ante et vulputate volutpat, eros pede semper est, vitae luctus metus libero eu augue. Morbi purus libero, faucibus adipiscing, commodo quis, gravida id, est. Sed lectus. Praesent elementum hendrerit tortor.</p>
+            
+            <p>Sed semper lorem at felis. Vestibulum volutpat, lacus a ultrices sagittis, mi neque euismod dui, eu pulvinar nunc sapien ornare nisl. Phasellus pede arcu, dapibus eu, fermentum et, dapibus sed, urna.</p>
+            
+            <h3>Outro Subtítulo</h3>
+            <p>Morbi interdum mollis sapien. Sed ac risus. Phasellus lacinia, magna a ullamcorper laoreet, lectus arcu pulvinar risus, vitae facilisis libero dolor a purus. Sed vel lacus. Mauris nibh felis, adipiscing varius, adipiscing in, lacinia vel, tellus.</p>
+        </article>
+        <div class="social-share">
+            <div class="social-icon">f</div> <!-- Facebook -->
+            <div class="social-icon">t</div> <!-- Twitter/X -->
+            <div class="social-icon">in</div> <!-- LinkedIn -->
+            <div class="social-icon">w</div> <!-- WhatsApp -->
+            <div class="social-icon">...</div> <!-- More options -->
+        </div>
+    </div>
+</body>
+</html>
