@@ -1,0 +1,37 @@
+🎯 Prompt for Jekyll Project Optimization and Troubleshooting by an AI
+
+Context:
+I am developing a project in Jekyll and have identified some issues that require correction and optimization. I want the AI to perform a detailed analysis and propose specific improvements, providing clear solutions for each problem. Below are the key areas that need adjustments:
+
+✅ 1. Paginator is not working:
+- Check the proper configuration of the paginator in the _config.yml file, including the paginate definition and assignment of a valid collection.
+- Ensure that .md files are correctly organized in the expected folders (e.g., _posts).
+- Review the loop implementation in template files (e.g., index.html, blog.html) to confirm proper iteration over the items.
+- Validate if there are conflicts with plugins or Jekyll versions.
+
+✅ 2. Mobile and Low-Resolution Screen Optimization:
+- Adjust the layout to be fully responsive, adapting to different screen sizes without content overlap.
+- Ensure that the Table of Contents (TOC) remains fixed and static, without shifting its position on smaller screens.
+- Review media queries to fix undesirable behaviors on mobile devices and low-resolution screens.
+- Implement techniques like viewport units (vw/vh), flexbox, and grid for better element distribution.
+
+✅ 3. Page Load Reordering Effect:
+- Eliminate the Flash of Unstyled Content (FOUC), ensuring styles are applied before rendering.
+- Optimize asynchronous loading of CSS and JavaScript files.
+- Add preload and font-display: swap for external fonts to prevent abrupt layout shifts.
+- Identify and resolve render-blocking issues to enhance loading performance.
+
+✅ 4. Main Content Images without Links:
+- Verify that all images in the main content are properly linked and accessible.
+- Inspect relative paths and folder structures to prevent 404 errors.
+- Implement lazy loading for images and optimize formats (e.g., WebP) to reduce load times.
+
+🔍 Additional Requirements:
+1. Suggest SEO best practices for page optimization.
+2. Indicate improvements for load time, such as CSS/JS minification and caching.
+3. Propose accessibility adjustments (WCAG), including color contrast and keyboard navigation.
+4. Identify hidden issues that might affect user experience or search engine indexing.
+5. Check if Jekyll dependencies need updates and recommend modern deployment practices.
+
+Objective:
+The final result should be an optimized, fast, responsive, and accessible page across all devices, following SEO best practices and modern web development standards.
