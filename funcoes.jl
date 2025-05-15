@@ -16,184 +16,199 @@ macro bind(def, element)
     #! format: on
 end
 
-# ╔═╡ 4d7dbad4-e8f5-4a1d-bb2a-c0fde2245cb9
-### Fórmula de Bhaskara Interativa
+# ╔═╡ 429de45e-6d44-4cc3-ba7f-61cb60bb1b6a
+### A Pluto.jl notebook ###
+# v0.19.27
 
-using PlutoUI
+using Markdown
 
-# Cria os controles deslizantes para os coeficientes
-
-# ╔═╡ 3e030bb4-be34-4bfe-9892-a78e1dc365d6
+# ╔═╡ 4588071d-e344-41ce-9e2b-01a8108caea9
 using Plots
 
-# ╔═╡ 928e2cb4-1843-4504-91c3-d8f9ee7d3d3c
-md"""
-### 📜 História da Fórmula de Bhaskara
+# ╔═╡ e12939f2-8812-4e97-aa81-8a7f36976b62
+using PlutoUI
 
-#### Origem da Equação Quadrática
-A fórmula que conhecemos como "Fórmula de Bhaskara" tem uma história fascinante:
-- **Século 7 a.C.**: Babilônios já resolviam problemas quadráticos usando métodos geométricos
-- **Século 3 a.C.**: Euclides desenvolveu métodos geométricos para equações quadráticas
-- **Século 7 d.C.**: Matemáticos indianos como Brahmagupta deram contribuições significativas
-- **Século 12**: Bhaskara II sistematizou e popularizou o método completo
+# Widget para seleção do tipo de função
 
-#### Quem foi Bhaskara?
-- **Nome completo**: Bhaskara II (1114-1185), também conhecido como Bhaskaracharya
-- **Localização**: Nasceu na Índia, em Vijjadavida (atual Bijapur)
-- **Contribuições**:
-  - Foi um dos mais importantes matemáticos da escola astronômica de Ujjain
-  - Escreveu o famoso tratado "Siddhanta Shiromani"
-  - Aprimorou métodos para resolver equações quadráticas
-  - Fez avanços significativos em trigonometria e cálculo
+# ╔═╡ ad7bbbd0-4cc3-4d14-9899-6dca704b4170
+tipo_funcao = @bind tipo_funcao_selecionado Select([
+    "Constante",
+    "Afim (1º grau)",
+    "Quadrática (2º grau)",
+    "Exponencial",
+    "Logarítmica",
+    "Modular",
+    "Trigonométrica"
+])
 
-Curiosamente, a fórmula como conhecemos hoje não foi descoberta exclusivamente por Bhaskara - ele foi quem a popularizou e organizou de forma sistemática.
+# Cabeçalho do notebook
 
-### 🧠 Curiosidades Matemáticas
-1. **O nome correto**: Na matemática ocidental, é mais comum chamar de "fórmula quadrática"
-2. **Discriminante (Δ)**:
-   - Δ > 0: Duas raízes reais distintas
-   - Δ = 0: Uma raiz real dupla
-   - Δ < 0: Duas raízes complexas conjugadas
-3. **Aplicações**: Usada em física, engenharia, economia e até em gráficos de computador
+# ╔═╡ e4b3f9ae-80e9-4fbd-b0e4-8faeb1f29b62
+Markdown.MD(Markdown.Admonition("note", "🧮 Explorador Interativo de Funções", [
+    Markdown.parse("""
+    Selecione o tipo de função:
+    $(tipo_funcao)
+    """)
+]))
 
-### 💡 Dicas e Truques para Resolução
-1. **Verifique sempre se a ≠ 0** - caso contrário não é quadrática!
-2. **Simplifique primeiro**: Divida todos os termos pelo MDC quando possível
-3. **Forma alternativa**: Para b par, pode usar x = [-b/2 ± √((b/2)² - ac)]/a
-4. **Fatoração visual**: Se as raízes são r₁ e r₂, a equação pode ser escrita como a(x-r₁)(x-r₂)=0
-5. **Relação entre raízes** (Fórmulas de Viète):
-   - Soma das raízes: r₁ + r₂ = -b/a
-   - Produto das raízes: r₁ × r₂ = c/a
+# Configurações comuns
 
-### 📊 Interpretação Geométrica
-A parábola y = ax² + bx + c:
-- Se a > 0: Concavidade para cima
-- Se a < 0: Concavidade para baixo
-- O vértice está em x = -b/(2a)
-- As raízes são os pontos onde a parábola cruza o eixo x
+# ╔═╡ 973cefdf-3162-4b82-bd2f-ad13be7ac92a
+dominio_padrao = -5:0.1:5
 
-### 🔍 Para Saber Mais
-- Leia "Lilavati", obra de Bhaskara que contém problemas algébricos
-- Explore as contribuições de Al-Khwarizmi (pai da álgebra)
-- Pesquise sobre o completamento de quadrados, método alternativo
-"""
+# Definições das funções e parâmetros
 
-# ╔═╡ 8c09462b-fde1-483d-a9ea-da4ceecdf742
-@bind a NumberField(-10:0.1:10, default=1)
-
-# ╔═╡ 31ae77c9-a04f-4183-a8bd-8b551e8e17ab
-@bind b NumberField(-10:0.1:10, default=0)
-
-# ╔═╡ 023129c9-1f57-4474-b555-e6dddf7cf795
-@bind c NumberField(-10:0.1:10, default=0)
-
-# Função para calcular as raízes usando Bhaskara
-
-# ╔═╡ 6186cd96-bcfe-4d9e-876d-8f6df47ad8b2
-function bhaskara(a, b, c)
-    if a == 0
-        return "Não é uma equação quadrática (a não pode ser zero)"
-    end
-    
-    delta = b^2 - 4*a*c
-    
-    if delta < 0
-        return "Não existem raízes reais (Δ < 0)"
-    elseif delta == 0
-        raiz = -b / (2*a)
-        return "Raiz única (Δ = 0): x = $(round(raiz, digits=4))"
-    else
-        raiz1 = (-b + sqrt(delta)) / (2*a)
-        raiz2 = (-b - sqrt(delta)) / (2*a)
-        return "Duas raízes reais: x₁ = $(round(raiz1, digits=4)) e x₂ = $(round(raiz2, digits=4))"
-    end
-end
-
-# Exibe a equação formatada
-
-# ╔═╡ 39bf345f-7c71-464e-9edb-16b8088bfb45
-function exibe_equacao(a, b, c)
-    termo_a = a == 0 ? "" : "$(a)x²"
-    
-    termo_b = if b == 0
-        ""
-    elseif b > 0
-        a == 0 ? "$(b)x" : " + $(b)x"
-    else
-        " - $(abs(b))x"
-    end
-    
-    termo_c = if c == 0
-        ""
-    elseif c > 0
-        (a == 0 && b == 0) ? "$c" : " + $c"
-    else
-        " - $(abs(c))"
-    end
-    
-    "Equação: $(termo_a)$(termo_b)$(termo_c) = 0"
-end
-
-# Interface do usuário
-
-# ╔═╡ ee03eecd-f5e7-41cf-b159-065375274b07
-md"""
-# Resolvendo Equações Quadráticas com a Fórmula de Bhaskara
-
-Insira os coeficientes da equação quadrática (ax² + bx + c = 0):
-
-Coeficiente a: $(a)
-
-Coeficiente b: $(b)
-
-Coeficiente c: $(c)
-
-$(exibe_equacao(a, b, c))
-
-**Resultado:** $(bhaskara(a, b, c))
-
----
-
-### Detalhes do Cálculo:
-- Δ = b² - 4ac = $(b)² - 4×$(a)×$(c) = $(b^2 - 4*a*c)
-"""
-
-# Opcional: Mostrar o gráfico da função
-
-# ╔═╡ 31a35dac-decc-413b-86c0-b284542f1aff
-if a != 0
-    x_range = range(-10, 10, length=400)
-    y = a .* x_range.^2 .+ b .* x_range .+ c
-    
-    plot(x_range, y, label="f(x) = $(exibe_equacao(a, b, c))", 
-         xlabel="x", ylabel="f(x)", title="Gráfico da Função Quadrática",
-         linewidth=2, framestyle=:box)
-    
-    # Marcar as raízes se existirem
-    delta = b^2 - 4*a*c
-    if delta >= 0
-        raiz1 = (-b + sqrt(delta)) / (2*a)
-        raiz2 = (-b - sqrt(delta)) / (2*a)
+# ╔═╡ 3224d812-8ea3-459a-b7d8-e5877cdc9a0f
+if @isdefined tipo_funcao_selecionado
+    if tipo_funcao_selecionado == "Constante"
+        k = @bind k_val Slider(-5:0.1:5, default=2, show_value=true)
+        Markdown.parse("""
+        ### Função Constante
+        $(k)
+        """)
         
-        if delta > 0
-            scatter!([raiz1, raiz2], zeros(2), label="Raízes", color=:red)
+        f(x) = k_val
+        dominio = dominio_padrao
+        
+    elseif tipo_funcao_selecionado == "Afim (1º grau)"
+        a = @bind a_val Slider(-3:0.1:3, default=1, show_value=true)
+        b = @bind b_val Slider(-5:0.1:5, default=0, show_value=true)
+        Markdown.parse("""
+        ### Função Afim
+        Coeficiente angular (a): $(a)
+        Coeficiente linear (b): $(b)
+        """)
+        
+        f(x) = a_val*x + b_val
+        dominio = dominio_padrao
+        
+    elseif tipo_funcao_selecionado == "Quadrática (2º grau)"
+        a = @bind a_val Slider(-2:0.1:2, default=1, show_value=true)
+        b = @bind b_val Slider(-5:0.1:5, default=0, show_value=true)
+        c = @bind c_val Slider(-5:0.1:5, default=0, show_value=true)
+        Markdown.parse("""
+        ### Função Quadrática
+        Coeficiente a: $(a)
+        Coeficiente b: $(b)
+        Coeficiente c: $(c)
+        """)
+        
+        f(x) = a_val*x^2 + b_val*x + c_val
+        dominio = dominio_padrao
+        
+    elseif tipo_funcao_selecionado == "Exponencial"
+        base = @bind base_val Slider(0.1:0.1:5, default=2, show_value=true)
+        c = @bind c_val Slider(-3:0.1:3, default=0, show_value=true)
+        Markdown.parse("""
+        ### Função Exponencial
+        Base: $(base)
+        Deslocamento horizontal: $(c)
+        """)
+        
+        f(x) = base_val^(x + c_val)
+        dominio = -5:0.1:2
+        
+    elseif tipo_funcao_selecionado == "Logarítmica"
+        base = @bind base_val Slider(2:0.1:10, default=ℯ, show_value=true)
+        c = @bind c_val Slider(-3:0.1:3, default=1, show_value=true)
+        Markdown.parse("""
+        ### Função Logarítmica
+        Base: $(base)
+        Deslocamento horizontal: $(c)
+        """)
+        
+        f(x) = log(base_val, x + c_val)
+        dominio = 0.1:0.1:5
+        
+    elseif tipo_funcao_selecionado == "Modular"
+        a = @bind a_val Slider(-2:0.1:2, default=1, show_value=true)
+        b = @bind b_val Slider(-5:0.1:5, default=0, show_value=true)
+        Markdown.parse("""
+        ### Função Modular
+        Coeficiente a: $(a)
+        Coeficiente b: $(b)
+        """)
+        
+        f(x) = abs(a_val*x + b_val)
+        dominio = dominio_padrao
+        
+    elseif tipo_funcao_selecionado == "Trigonométrica"
+        tipo = @bind tipo_val Select(["sin", "cos", "tan"])
+        amplitude = @bind amp_val Slider(0.1:0.1:3, default=1, show_value=true)
+        frequencia = @bind freq_val Slider(0.1:0.1:3, default=1, show_value=true)
+        Markdown.parse("""
+        ### Função Trigonométrica
+        Tipo: $(tipo)
+        Amplitude: $(amplitude)
+        Frequência: $(frequencia)
+        """)
+        
+        if tipo_val == "sin"
+            f(x) = amp_val*sin(freq_val*x)
+        elseif tipo_val == "cos"
+            f(x) = amp_val*cos(freq_val*x)
         else
-            scatter!([raiz1], [0], label="Raiz única", color=:red)
+            f(x) = amp_val*tan(freq_val*x)
         end
+        dominio = -2π:0.1:2π
     end
     
-    ylims!(-10, 10)
-    current()
+    # Plotagem do gráfico
+    p = plot(dominio, f.(dominio), 
+        title="Função $(tipo_funcao_selecionado)",
+        xlabel="x",
+        ylabel="f(x)",
+        label="f(x)",
+        linewidth=2,
+        framestyle=:grid,
+        legend=:topright)
+    
+    # Análises específicas
+    analise = if tipo_funcao_selecionado == "Afim (1º grau)"
+        raiz = round(-b_val/a_val, digits=3)
+        Markdown.parse("""
+        **Análise:**
+        - Raiz: x = $raiz
+        - Coeficiente angular: $(a_val)
+        - Interseção com eixo y: $(b_val)
+        """)
+        
+    elseif tipo_funcao_selecionado == "Quadrática (2º grau)"
+        Δ = b_val^2 - 4*a_val*c_val
+        x_vertice = round(-b_val/(2*a_val), digits=3)
+        y_vertice = round(f(x_vertice), digits=3)
+        Markdown.parse("""
+        **Análise:**
+        - Vértice: ($x_vertice, $y_vertice)
+        - Discriminante (Δ): $(round(Δ, digits=3))
+        - Concavidade: $(a_val > 0 ? "Para cima" : "Para baixo")
+        """)
+        
+    elseif tipo_funcao_selecionado == "Exponencial"
+        Markdown.parse("""
+        **Análise:**
+        - Função sempre positiva
+        - Taxa de crescimento: $(round(base_val, digits=3))
+        """)
+        
+    else
+        Markdown.parse("**Selecione parâmetros para visualizar a função**")
+    end
+    
+    # Exibe análise e gráfico
+    analise
+    p
 end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
+Markdown = "d6f4376e-aef5-505a-96c1-9c027394607a"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 
 [compat]
-Plots = "~1.40.9"
+Plots = "~1.40.13"
 PlutoUI = "~0.7.61"
 """
 
@@ -203,7 +218,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.11.3"
 manifest_format = "2.0"
-project_hash = "e0ccfc026729846cf38d67330d7045ef3a02877d"
+project_hash = "632cf1585b4171b108bacf8c32f1d4e3a4de34f1"
 
 [[deps.AbstractPlutoDingetjes]]
 deps = ["Pkg"]
@@ -795,9 +810,9 @@ version = "1.4.3"
 
 [[deps.Plots]]
 deps = ["Base64", "Contour", "Dates", "Downloads", "FFMPEG", "FixedPointNumbers", "GR", "JLFzf", "JSON", "LaTeXStrings", "Latexify", "LinearAlgebra", "Measures", "NaNMath", "Pkg", "PlotThemes", "PlotUtils", "PrecompileTools", "Printf", "REPL", "Random", "RecipesBase", "RecipesPipeline", "Reexport", "RelocatableFolders", "Requires", "Scratch", "Showoff", "SparseArrays", "Statistics", "StatsBase", "TOML", "UUIDs", "UnicodeFun", "UnitfulLatexify", "Unzip"]
-git-tree-sha1 = "dae01f8c2e069a683d3a6e17bbae5070ab94786f"
+git-tree-sha1 = "809ba625a00c605f8d00cd2a9ae19ce34fc24d68"
 uuid = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
-version = "1.40.9"
+version = "1.40.13"
 
     [deps.Plots.extensions]
     FileIOExt = "FileIO"
@@ -946,9 +961,9 @@ version = "1.11.0"
 
 [[deps.StableRNGs]]
 deps = ["Random"]
-git-tree-sha1 = "83e6cce8324d49dfaf9ef059227f91ed4441a8e5"
+git-tree-sha1 = "95af145932c2ed859b63329952ce8d633719f091"
 uuid = "860ef19b-820b-49d6-a774-d7a799459cd3"
-version = "1.0.2"
+version = "1.0.3"
 
 [[deps.Statistics]]
 deps = ["LinearAlgebra"]
@@ -1034,9 +1049,9 @@ version = "0.4.1"
 
 [[deps.Unitful]]
 deps = ["Dates", "LinearAlgebra", "Random"]
-git-tree-sha1 = "c0667a8e676c53d390a09dc6870b3d8d6650e2bf"
+git-tree-sha1 = "d62610ec45e4efeabf7032d67de2ffdea8344bed"
 uuid = "1986cc42-f94f-5a68-af5c-568840ba703d"
-version = "1.22.0"
+version = "1.22.1"
 
     [deps.Unitful.extensions]
     ConstructionBaseUnitfulExt = "ConstructionBase"
@@ -1297,9 +1312,9 @@ version = "1.18.0+0"
 
 [[deps.libpng_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Zlib_jll"]
-git-tree-sha1 = "068dfe202b0a05b8332f1e8e6b4080684b9c7700"
+git-tree-sha1 = "002748401f7b520273e2b506f61cab95d4701ccf"
 uuid = "b53b4c65-9356-5827-b1ea-8c7a1a84506f"
-version = "1.6.47+0"
+version = "1.6.48+0"
 
 [[deps.libvorbis_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Ogg_jll", "Pkg"]
@@ -1343,15 +1358,12 @@ version = "1.8.1+0"
 """
 
 # ╔═╡ Cell order:
-# ╠═928e2cb4-1843-4504-91c3-d8f9ee7d3d3c
-# ╠═4d7dbad4-e8f5-4a1d-bb2a-c0fde2245cb9
-# ╠═8c09462b-fde1-483d-a9ea-da4ceecdf742
-# ╠═31ae77c9-a04f-4183-a8bd-8b551e8e17ab
-# ╠═023129c9-1f57-4474-b555-e6dddf7cf795
-# ╠═6186cd96-bcfe-4d9e-876d-8f6df47ad8b2
-# ╠═39bf345f-7c71-464e-9edb-16b8088bfb45
-# ╠═ee03eecd-f5e7-41cf-b159-065375274b07
-# ╠═3e030bb4-be34-4bfe-9892-a78e1dc365d6
-# ╠═31a35dac-decc-413b-86c0-b284542f1aff
+# ╠═429de45e-6d44-4cc3-ba7f-61cb60bb1b6a
+# ╠═4588071d-e344-41ce-9e2b-01a8108caea9
+# ╠═e12939f2-8812-4e97-aa81-8a7f36976b62
+# ╠═ad7bbbd0-4cc3-4d14-9899-6dca704b4170
+# ╠═e4b3f9ae-80e9-4fbd-b0e4-8faeb1f29b62
+# ╠═973cefdf-3162-4b82-bd2f-ad13be7ac92a
+# ╠═3224d812-8ea3-459a-b7d8-e5877cdc9a0f
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
