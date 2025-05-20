@@ -25,8 +25,6 @@ begin
     using PlutoUI
 end
 
-# ⚙️ Controles interativos
-
 # ╔═╡ 235d524f-8ae1-45e4-bd76-c75bf8c5de87
 md"""
 # 📊 Controle Estatístico de Processo com Regras de Western Electric
@@ -131,6 +129,7 @@ Isso permite observar como padrões irregulares podem surgir e como as regras de
 
 
 # ╔═╡ 4ac91efa-9605-4da5-a5c0-bd0a4a986c08
+# ⚙️ Controles interativos
 @bind n Slider(10:1:100, show_value=true, default=50)
 
 # ╔═╡ e3d22016-ded3-4a20-99c3-61d2d0a431c4
@@ -139,9 +138,8 @@ Isso permite observar como padrões irregulares podem surgir e como as regras de
 # ╔═╡ a2b078c2-7c49-4c2e-bf48-53d92778295e
 @bind offset Slider(-20:0.5:20, show_value=true, default=10)
 
-# 🔢 Gerando os dados
-
 # ╔═╡ 6620693e-da52-4334-8510-4f9d3853a5e0
+# 🔢 Gerando os dados
 begin
     Random.seed!(seed)
     data = cumsum(randn(n)) .+ offset
@@ -166,9 +164,8 @@ end
 # ╔═╡ 87760454-fd40-44ed-83d7-46df2d75028f
 side(x) = x > μ ? 1 : (x < μ ? -1 : 0)
 
-# 📏 Regras de Western Electric
-
 # ╔═╡ 157eef65-9808-4fce-8987-02490c2ba76b
+# 📏 Regras de Western Electric
 begin
     function check_rule1(data)
         return [(x > ucl) || (x < lcl) for x in data]
@@ -228,9 +225,8 @@ begin
     end
 end
 
-# 🚩 Detecção de violações
-
 # ╔═╡ e1164a1b-2de0-4c10-a5ba-9e7208c19de7
+# 🚩 Detecção de violações
 begin
     rule1_flags = check_rule1(data)
     rule2_flags = check_rule2(data)
@@ -238,9 +234,8 @@ begin
     rule4_flags = check_rule4(data)
 end
 
-# 📈 Gráfico com destaque das regras
-
 # ╔═╡ e82994e1-fa24-4396-afe4-0b100aea1087
+# 📈 Gráfico com destaque das regras
 begin
     plt = plot(data, 
         label="Dados",
@@ -271,6 +266,48 @@ begin
 
     plt  # <- Apenas isso no final da célula
 end
+
+# ╔═╡ 2764d27a-d1de-4298-b135-5a633801b2ff
+md"""
+## 📚 Origem e História das Regras de Western Electric
+
+As **Regras de Western Electric** surgiram como parte dos esforços pioneiros em **Controle Estatístico de Processo (CEP)** nos Estados Unidos, durante o início do século XX.
+
+### 🏛️ Contexto Histórico
+
+- No início da década de 1920, **Walter A. Shewhart**, trabalhando nos laboratórios da **Bell Telephone**, desenvolveu o **Gráfico de Controle**, marco inicial da aplicação da estatística para controle de qualidade.
+  
+- Em 1956, a **Western Electric Company**, subsidiária da AT&T responsável por equipamentos de telecomunicação, publicou o manual **"Statistical Quality Control Handbook"**.
+
+  > 📘 **Referência:**  
+  > *Western Electric Company. (1956). Statistical Quality Control Handbook.*
+
+Este manual consolidou práticas de controle estatístico e introduziu **regras padronizadas** para detecção de padrões anormais em gráficos de controle, conhecidas como as **quatro Regras de Western Electric**.
+
+---
+
+### 🎯 Objetivo das Regras
+
+Essas regras foram desenvolvidas para identificar **causas especiais de variação** — isto é, variações no processo que não são aleatórias e que indicam **instabilidade no sistema**.
+
+- A aplicação sistemática dessas regras permite identificar **sinais precoces de problemas** no processo produtivo.
+- Elas complementam os **gráficos de controle** simples, que apenas indicam quando os dados ultrapassam os limites de 3σ.
+
+---
+
+### 🧠 Influência Posterior
+
+As regras inspiraram outras metodologias importantes, como:
+
+- **Normas da American Society for Quality (ASQ)**
+- **Six Sigma**
+- **Controle Total da Qualidade (TQC)**
+- **Modelos modernos de monitoramento em série temporal e machine learning**
+
+---
+
+Essas regras continuam sendo fundamentais na engenharia da qualidade, estatística aplicada e controle de processos industriais.
+"""
 
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
@@ -1443,5 +1480,6 @@ version = "1.8.1+0"
 # ╠═157eef65-9808-4fce-8987-02490c2ba76b
 # ╠═e1164a1b-2de0-4c10-a5ba-9e7208c19de7
 # ╠═e82994e1-fa24-4396-afe4-0b100aea1087
+# ╟─2764d27a-d1de-4298-b135-5a633801b2ff
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
