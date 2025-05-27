@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Tabela Periódica dos Testes Estatísticos</title>
+    <style>
+        :root {
+            --primary-color: #1a237e;
+            --qualitativo-color: #e91e63;
+            --quantitativo-color: #2196f3;
+            --bg-color: #fafafa;
+            --card-bg: #fff;
+            --text-color: #212121;
+            --shadow: 0 2px 8px rgba(0,0,0,0.1);
+
+            --category-parametrico: #4CAF50;
+            --category-nao-parametrico: #F44336;
+            --category-correlacao: #9C27B0;
+            --category-proporcao: #FF9800;
+            --category-pareado: #2196F3;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #3949ab;
+            --qualitativo-color: #f06292;
+            --quantitativo-color: #64b5f6;
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #ffffff;
+            --shadow: 0 2px 8px rgba(0,0,0,0.3);
+
+            --category-parametrico: #81C784;
+            --category-nao-parametrico: #E57373;
+            --category-correlacao: #BA68C8;
+            --category-proporcao: #FFB74D;
+            --category-pareado: #64B5F6;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            color: var(--text-color);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--text-color);
+            font-size: 2.5em;
+            margin-bottom: 40px;
+        }
+
+        .periodic-table {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .test-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border-top: 4px solid transparent;
+        }
+
+        .test-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .test-card.qualitativo {
+            border-top: 4px solid var(--qualitativo-color);
+        }
+
+        .test-card.quantitativo {
+            border-top: 4px solid var(--quantitativo-color);
+        }
+
+        .test-card.filtered {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        /* Cores das categorias nos cards */
+        .test-card[data-categories*="parametrico"] { 
+            border-top-color: var(--category-parametrico);
+        }
+        .test-card[data-categories*="nao_parametrico"] { 
+            border-top-color: var(--category-nao-parametrico);
+        }
+        .test-card[data-categories*="correlacao"] { 
+            border-top-color: var(--category-correlacao);
+        }
+        .test-card[data-categories*="proporcao"] { 
+            border-top-color: var(--category-proporcao);
+        }
+        .test-card[data-categories*="pareado"] { 
+            border-top-color: var(--category-pareado);
+        }
+
+        /* Adicionar indicador de múltiplas categorias */
+        .test-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .test-card[data-categories~="pareado"][data-categories~="parametrico"]::before,
+        .test-card[data-categories~="pareado"][data-categories~="nao_parametrico"]::before,
+        .test-card[data-categories~="correlacao"][data-categories~="parametrico"]::before,
+        .test-card[data-categories~="correlacao"][data-categories~="nao_parametrico"]::before {
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 15px solid var(--category-pareado);
+            transform: rotate(45deg);
+            transform-origin: top right;
+        }
+
+        .test-symbol {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--text-color);
+        }
+
+        .test-name {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+
+        .test-details {
+            font-size: 0.9em;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .test-type {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 0.8em;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: white;
+        }
+
+        .test-type.qualitativo {
+            background: var(--qualitativo-color);
+        }
+
+        .test-type.quantitativo {
+            background: var(--quantitativo-color);
+        }
+
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .filters select, .filters input {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .test-info {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            display: none;
+            z-index: 1000;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .categories {
+            margin-top: 40px;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .category-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .category-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .category-btn::before {
+            content: '';
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        /* Cores dos quadrados para cada categoria */
+        .category-btn[data-category="parametrico"]::before {
+            background: var(--category-parametrico);
+        }
+
+        .category-btn[data-category="nao_parametrico"]::before {
+            background: var(--category-nao-parametrico);
+        }
+
+        .category-btn[data-category="correlacao"]::before {
+            background: var(--category-correlacao);
+        }
+
+        .category-btn[data-category="proporcao"]::before {
+            background: var(--category-proporcao);
+        }
+
+        .category-btn[data-category="pareado"]::before {
+            background: var(--category-pareado);
+        }
+
+        .category-btn[data-category="todos"]::before {
+            background: linear-gradient(45deg,
+                var(--category-parametrico) 20%,
+                var(--category-nao-parametrico) 20% 40%,
+                var(--category-correlacao) 40% 60%,
+                var(--category-proporcao) 60% 80%,
+                var(--category-pareado) 80%
+            );
+        }
+
+        .category-btn:hover {
+            opacity: 0.8;
+        }
+
+        .category-btn.active {
+            font-weight: 600;
+        }
+
+        /* Remover estilos anteriores de border e background */
+        .category-btn[data-category] {
+            border: none;
+            background: transparent;
+        }
+
+        .category-btn[data-category].active {
+            background: transparent;
+            color: var(--text-color);
+        }
+
+        .category-description {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: var(--text-color);
+        }
+
+        @media (max-width: 768px) {
+            .periodic-table {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
+            }
+
+            .filters {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Tabela Periódica dos Testes Estatísticos</h1>
+    
+    <div class="filters">
+        <input type="text" id="search" placeholder="Pesquisar teste...">
+        <select id="tipo">
+            <option value="">Todos os tipos</option>
+            <option value="qualitativo">Qualitativos</option>
+            <option value="quantitativo">Quantitativos</option>
+        </select>
+    </div>
+
+    <div class="periodic-table" id="periodic-table"></div>
+    
+    <div class="test-info" id="test-info"></div>
+
+    <div class="categories">
+        <div class="category-buttons">
+            <button class="category-btn active" data-category="todos">Todos os Testes</button>
+            <button class="category-btn" data-category="parametrico">Paramétricos</button>
+            <button class="category-btn" data-category="nao_parametrico">Não Paramétricos</button>
+            <button class="category-btn" data-category="correlacao">Correlação</button>
+            <button class="category-btn" data-category="proporcao">Proporção</button>
+            <button class="category-btn" data-category="pareado">Pareados</button>
+        </div>
+        <div class="category-description" id="category-description">
+            Selecione uma categoria para filtrar os testes estatísticos
+        </div>
+    </div>
+
+    <script>
+        const testes = [
+            {
+                symbol: 'χ²',
+                name: 'Qui-Quadrado',
+                type: 'qualitativo',
+                details: 'Comparação de proporções em amostras grandes',
+                description: 'O teste Qui-Quadrado é utilizado para comparar proporções entre grupos em amostras grandes.'
+            },
+            {
+                symbol: 'Fi',
+                name: 'Fisher',
+                type: 'qualitativo',
+                details: 'Comparação de proporções em amostras pequenas',
+                description: 'O Teste Exato de Fisher é indicado para comparar proporções em amostras pequenas.'
+            },
+            {
+                symbol: 'T',
+                name: 'T de Student',
+                type: 'quantitativo',
+                details: 'Comparação de médias (distribuição normal)',
+                description: 'O Teste t de Student compara médias entre dois grupos quando os dados têm distribuição normal e variâncias iguais.'
+            },
+            {
+                symbol: 'MW',
+                name: 'Mann-Whitney',
+                type: 'quantitativo',
+                details: 'Comparação não-paramétrica de dois grupos',
+                description: 'O teste de Mann-Whitney é uma alternativa não paramétrica ao teste t para duas amostras independentes.'
+            },
+            {
+                symbol: 'An',
+                name: 'ANOVA',
+                type: 'quantitativo',
+                details: 'Comparação de 3+ grupos (distribuição normal)',
+                description: 'A ANOVA compara médias entre três ou mais grupos com distribuição normal e variâncias iguais.'
+            },
+            {
+                symbol: 'KW',
+                name: 'Kruskal-Wallis',
+                type: 'quantitativo',
+                details: 'Comparação não-paramétrica de 3+ grupos',
+                description: 'O teste de Kruskal-Wallis é uma alternativa não paramétrica à ANOVA.'
+            },
+            {
+                symbol: 'Tp',
+                name: 'T Pareado',
+                type: 'quantitativo',
+                details: 'Comparação de amostras pareadas normais',
+                description: 'O Teste t pareado compara médias de duas amostras relacionadas (pareadas) com distribuição normal.'
+            },
+            {
+                symbol: 'W',
+                name: 'Wilcoxon',
+                type: 'quantitativo',
+                details: 'Comparação não-paramétrica pareada',
+                description: 'O teste de Wilcoxon é uma alternativa não paramétrica ao teste t pareado.'
+            },
+            {
+                symbol: 'Pe',
+                name: 'Pearson',
+                type: 'quantitativo',
+                details: 'Correlação linear (distribuição normal)',
+                description: 'O coeficiente de Pearson mede a correlação linear entre duas variáveis quantitativas com distribuição normal.'
+            },
+            {
+                symbol: 'Sp',
+                name: 'Spearman',
+                type: 'quantitativo',
+                details: 'Correlação não-paramétrica',
+                description: 'O coeficiente de Spearman mede a correlação entre duas variáveis quantitativas sem pressupor normalidade.'
+            }
+        ];
+
+        // Categorias dos testes
+        const testCategories = {
+            'Qui-Quadrado': ['proporcao'],
+            'Fisher': ['proporcao'],
+            'T de Student': ['parametrico'],
+            'Mann-Whitney': ['nao-parametrico'],
+            'ANOVA': ['parametrico'],
+            'Kruskal-Wallis': ['nao_parametrico'],
+            'T Pareado': ['parametrico', 'pareado'],
+            'Wilcoxon': ['nao-parametrico', 'pareado'],
+            'Pearson': ['parametrico', 'correlacao'],
+            'Spearman': ['nao-parametrico', 'correlacao']
+        };
+
+        const categoryDescriptions = {
+            'todos': 'Mostrando todos os testes estatísticos disponíveis',
+            'parametrico': 'Testes que assumem distribuição normal dos dados',
+            'nao_parametrico': 'Testes que não requerem distribuição normal dos dados',
+            'correlacao': 'Testes para medir a relação entre variáveis',
+            'proporcao': 'Testes para comparar proporções entre grupos',
+            'pareado': 'Testes para amostras pareadas ou dependentes'
+        };
+
+        function createTestCard(teste) {
+            const categories = testCategories[teste.name];
+            const categoryClasses = categories.map(cat => `category-${cat}`).join(' ');
+            return `
+                <div class="test-card ${teste.type}" 
+                     data-name="${teste.name.toLowerCase()}" 
+                     data-type="${teste.type}"
+                     data-categories="${categories.join(' ')}">
+                    <div class="test-type ${teste.type}">${teste.type}</div>
+                    <div class="test-symbol">${teste.symbol}</div>
+                    <div class="test-name">${teste.name}</div>
+                    <div class="test-details">${teste.details}</div>
+                    ${categories.length > 1 ? '<div class="multi-category-indicator"></div>' : ''}
+                </div>
+            `;
+        }
+
+        function renderTests() {
+            const container = document.getElementById('periodic-table');
+            container.innerHTML = testes.map(createTestCard).join('');
+            
+            document.querySelectorAll('.test-card').forEach(card => {
+                card.addEventListener('click', () => showTestInfo(card.querySelector('.test-name').textContent));
+            });
+        }
+
+        function showTestInfo(testName) {
+            const teste = testes.find(t => t.name === testName);
+            const infoDiv = document.getElementById('test-info');
+            infoDiv.innerHTML = `
+                <h3>${teste.name}</h3>
+                <p>${teste.description}</p>
+            `;
+            infoDiv.style.display = 'block';
+            setTimeout(() => {
+                document.onclick = (e) => {
+                    if (!infoDiv.contains(e.target)) {
+                        infoDiv.style.display = 'none';
+                        document.onclick = null;
+                    }
+                };
+            }, 0);
+        }
+
+        function filterTests() {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            const tipoSelecionado = document.getElementById('tipo').value;
+
+            document.querySelectorAll('.test-card').forEach(card => {
+                const matchesSearch = card.dataset.name.includes(searchTerm);
+                const matchesTipo = !tipoSelecionado || card.dataset.type === tipoSelecionado;
+                card.style.display = matchesSearch && matchesTipo ? 'block' : 'none';
+            });
+        }
+
+        document.getElementById('search').addEventListener('input', filterTests);
+        document.getElementById('tipo').addEventListener('change', filterTests);
+
+        // Adicionar evento aos botões de categoria
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remover classe active de todos os botões
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                // Adicionar classe active ao botão clicado
+                btn.classList.add('active');
+                
+                const category = btn.dataset.category;
+                filterByCategory(category);
+                
+                // Atualizar descrição da categoria
+                document.getElementById('category-description').textContent = 
+                    categoryDescriptions[category] || categoryDescriptions['todos'];
+            });
+        });
+
+        function filterByCategory(category) {
+            document.querySelectorAll('.test-card').forEach(card => {
+                const testName = card.querySelector('.test-name').textContent;
+                if (category === 'todos') {
+                    card.classList.remove('filtered');
+                    // Mostrar todas as cores das categorias
+                    card.style.borderTopColor = '';
+                } else {
+                    if (testCategories[testName]?.includes(category)) {
+                        card.classList.remove('filtered');
+                        // Definir a cor da categoria selecionada
+                        card.style.borderTopColor = `var(--category-${category})`;
+                    } else {
+                        card.classList.add('filtered');
+                        // Manter a cor original para cards filtrados
+                        card.style.borderTopColor = '';
+                    }
+                }
+            });
+        }
+
+        // Inicialização
+        renderTests();
+    </script>
+</body>
+</html>
