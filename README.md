@@ -382,12 +382,59 @@ _(Describe where to find final and intermediate reports, and where to edit sourc
 
 > 💡 **Dica:** Consulte sempre a [documentação oficial do Git](https://git-scm.com/doc) para mais comandos e detalhes avançados.
 
+## Política de Versionamento (Versioning Policy)
+
+Adotamos o [SemVer](https://semver.org/lang/pt-BR/) (Versionamento Semântico) para controle de versões do projeto:
+
+- **MAJOR**: Mudanças incompatíveis na API ou estrutura.
+- **MINOR**: Novas funcionalidades, mantendo compatibilidade.
+- **PATCH**: Correções de bugs e pequenas melhorias.
+
+Exemplo de versão: `v2.1.3`  
+Se preferir, pode-se adotar versionamento por data, como `2025.06.06`.
+
+---
+
+## Padrão para Issues e Pull Requests (Issues and Pull Requests Standard)
+
+- **Issues**
+  - Use títulos claros e objetivos.
+  - Descreva o problema, contexto, passos para reproduzir e, se possível, inclua prints ou logs.
+  - Utilize labels (ex: bug, enhancement, question) para facilitar o acompanhamento.
+  - Associe a issue a um responsável e milestone, se aplicável.
+
+- **Pull Requests**
+  - Sempre relacione o PR a uma issue (ex: "Closes #12").
+  - Descreva resumidamente o que foi feito e o impacto das mudanças.
+  - Siga o padrão de branch:  
+    - `feature/nome-da-feature` para novas funcionalidades  
+    - `fix/nome-da-correção` para correções de bugs  
+    - `hotfix/nome-do-hotfix` para correções urgentes
+  - Solicite revisão de pelo menos um membro da equipe.
+  - Aguarde aprovação antes de fazer merge no branch principal.
+
+---
+
+> 💡 Consulte a documentação interna da empresa para mais detalhes sobre o fluxo de trabalho colaborativo.
+
 ## Observações (Notes)
 
 - _Inclua observações importantes, limitações, pontos de atenção, etc._  
   _(Include important notes, limitations, points of attention, etc.)_
 - _Adapte este modelo conforme necessário para o seu projeto._  
   _(Adapt this template as needed for your project.)_
+
+## Links Úteis (Useful Links)
+
+- [Morrison Külsenn](https://morrisonkulsenn.com)
+- [Documentação Oficial do Git](https://git-scm.com/doc)
+- [Documentação do Python](https://docs.python.org/3/)
+- [Documentação do R](https://cran.r-project.org/manuals.html)
+- [Documentação do Julia](https://docs.julialang.org/)
+- [Jupyter Notebooks](https://jupyter.org/)
+- [Docker Docs](https://docs.docker.com/)
+- [Markdown Guide](https://www.markdownguide.org/basic-syntax/)
+- [GitHub Docs](https://docs.github.com/)
 
 ---
 
