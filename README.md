@@ -140,7 +140,97 @@ reports/
 
 > **Dica:** Sempre que possível, mantenha os arquivos editáveis dos relatórios junto com os PDFs finais para facilitar futuras atualizações e revisões.
 
-## 📤 Instruções para subir e sincronizar alterações com o GitHub
+---
+
+Siga sempre este modelo para novos projetos, garantindo padronização e organização em toda a equipe.
+
+---
+
+# 📊 MODELO EDITÁVEL PARA NOVOS PROJETOS (EDITABLE TEMPLATE FOR NEW PROJECTS)
+
+> **Atenção / Attention:** Ao iniciar um novo projeto, apague este bloco de instruções e preencha com as informações do seu projeto.  
+> (When starting a new project, delete this instruction block and fill in your project information.)
+
+## Nome do Projeto (Project Name)
+
+_Descreva aqui o nome do projeto._  
+_(Describe the project name here.)_
+
+## Descrição (Description)
+
+_Explique brevemente o objetivo do projeto, contexto, área de aplicação e principais entregáveis._  
+_(Briefly explain the project objective, context, application area, and main deliverables.)_
+
+## Equipe (Team)
+
+- **Responsável / Lead:** _Nome do responsável (Lead name)_
+- **Colaboradores / Collaborators:** _Lista de membros (List of members)_
+
+## Contato (Contact)
+
+- _E-mail, canal interno, etc. (Email, internal channel, etc.)_
+
+## Estrutura de Diretórios (Directory Structure)
+
+```text
+data/
+├── raw/
+├── processed/
+└── external/
+
+notebooks/
+
+scripts/
+├── preprocess/
+├── analysis/
+│   ├── regression/
+│   ├── classification/
+│   ├── clustering/
+│   ├── timeseries/
+│   ├── sampling/
+│   └── bayesian/
+└── visualization/
+
+models/
+
+reports/
+├── figures/
+├── pdf/
+└── latex/
+
+results/
+
+references/
+
+environment/
+
+README.md
+.gitignore
+LICENSE
+```
+
+## Como usar (How to use)
+
+1. _Explique como iniciar o projeto, rodar scripts, notebooks, etc._  
+   _(Explain how to start the project, run scripts, notebooks, etc.)_
+2. _Inclua instruções para instalação de dependências, se necessário._  
+   _(Include instructions for installing dependencies, if needed.)_
+3. _Descreva como gerar relatórios ou outputs principais._  
+   _(Describe how to generate reports or main outputs.)_
+
+## Dependências (Dependencies)
+
+- Python: _Versão e principais pacotes (Version and main packages)_
+- Julia: _Versão e principais pacotes (Version and main packages)_
+- R: _Versão e principais pacotes (Version and main packages)_
+- Outros: _Docker, LaTeX, etc. (Others: Docker, LaTeX, etc.)_
+
+## Relatórios (Reports)
+
+_Descreva onde encontrar os relatórios finais e intermediários, e onde editar os arquivos-fonte (LaTeX, Rmd, etc.)._  
+_(Describe where to find final and intermediate reports, and where to edit source files.)_
+
+## Comandos úteis (Useful commands)
 
 ### Subindo suas alterações locais para o GitHub
 
@@ -292,113 +382,6 @@ reports/
 
 > 💡 **Dica:** Consulte sempre a [documentação oficial do Git](https://git-scm.com/doc) para mais comandos e detalhes avançados.
 
----
-
-Siga sempre este modelo para novos projetos, garantindo padronização e organização em toda a equipe.
-
----
-
-# 📊 MODELO EDITÁVEL PARA NOVOS PROJETOS (EDITABLE TEMPLATE FOR NEW PROJECTS)
-
-> **Atenção / Attention:** Ao iniciar um novo projeto, apague este bloco de instruções e preencha com as informações do seu projeto.  
-> (When starting a new project, delete this instruction block and fill in your project information.)
-
-## Nome do Projeto (Project Name)
-
-_Descreva aqui o nome do projeto._  
-_(Describe the project name here.)_
-
-## Descrição (Description)
-
-_Explique brevemente o objetivo do projeto, contexto, área de aplicação e principais entregáveis._  
-_(Briefly explain the project objective, context, application area, and main deliverables.)_
-
-## Equipe (Team)
-
-- **Responsável / Lead:** _Nome do responsável (Lead name)_
-- **Colaboradores / Collaborators:** _Lista de membros (List of members)_
-
-## Contato (Contact)
-
-- _E-mail, canal interno, etc. (Email, internal channel, etc.)_
-
-## Estrutura de Diretórios (Directory Structure)
-
-```text
-data/
-├── raw/
-├── processed/
-└── external/
-
-notebooks/
-
-scripts/
-├── preprocess/
-├── analysis/
-│   ├── regression/
-│   ├── classification/
-│   ├── clustering/
-│   ├── timeseries/
-│   ├── sampling/
-│   └── bayesian/
-└── visualization/
-
-models/
-
-reports/
-├── figures/
-├── pdf/
-└── latex/
-
-results/
-
-references/
-
-environment/
-
-README.md
-.gitignore
-LICENSE
-```
-
-## Como usar (How to use)
-
-1. _Explique como iniciar o projeto, rodar scripts, notebooks, etc._  
-   _(Explain how to start the project, run scripts, notebooks, etc.)_
-2. _Inclua instruções para instalação de dependências, se necessário._  
-   _(Include instructions for installing dependencies, if needed.)_
-3. _Descreva como gerar relatórios ou outputs principais._  
-   _(Describe how to generate reports or main outputs.)_
-
-## Dependências (Dependencies)
-
-- Python: _Versão e principais pacotes (Version and main packages)_
-- Julia: _Versão e principais pacotes (Version and main packages)_
-- R: _Versão e principais pacotes (Version and main packages)_
-- Outros: _Docker, LaTeX, etc. (Others: Docker, LaTeX, etc.)_
-
-## Relatórios (Reports)
-
-_Descreva onde encontrar os relatórios finais e intermediários, e onde editar os arquivos-fonte (LaTeX, Rmd, etc.)._  
-_(Describe where to find final and intermediate reports, and where to edit source files.)_
-
-## Comandos úteis (Useful commands)
-
-- Executar script Python: `python scripts/analysis/regressao-linear.py`  
-  (Run Python script)
-- Executar script R: `Rscript scripts/analysis/clustering/kmeans.R`  
-  (Run R script)
-- Executar script Julia: `julia scripts/analysis/classification/classificador-arvore.jl`  
-  (Run Julia script)
-- Abrir Jupyter Notebook: `jupyter notebook`  
-  (Open Jupyter Notebook)
-- Instalar dependências Python: `pip install -r environment/requirements.txt`  
-  (Install Python dependencies)
-- Instalar dependências Julia: `julia --project=environment -e 'using Pkg; Pkg.instantiate()'`  
-  (Install Julia dependencies)
-- Instalar dependências R: `Rscript -e 'install.packages(readLines("environment/DESCRIPTION"))'`  
-  (Install R dependencies)
-
 ## Observações (Notes)
 
 - _Inclua observações importantes, limitações, pontos de atenção, etc._  
@@ -407,6 +390,8 @@ _(Describe where to find final and intermediate reports, and where to edit sourc
   _(Adapt this template as needed for your project.)_
 
 ---
+
+![Logo da Empresa](caminho/para/logo.png)
 
 > **Apague este bloco após preencher com as informações do seu projeto.**  
 > (Delete this block after filling in your project information.)
