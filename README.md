@@ -436,6 +436,25 @@ Se preferir, pode-se adotar versionamento por data, como `2025.06.06`.
 - [Markdown Guide](https://www.markdownguide.org/basic-syntax/)
 - [GitHub Docs](https://docs.github.com/)
 
+## Checklist de Entrega de Projeto (Project Delivery Checklist)
+
+Antes de finalizar e entregar o projeto, verifique se todos os itens abaixo foram cumpridos:
+
+- [ ] README.md atualizado e completo (objetivo, equipe, instruções de uso, dependências, etc.)
+- [ ] Estrutura de diretórios conforme o padrão do template
+- [ ] Todos os scripts e notebooks revisados, comentados e funcionando
+- [ ] Dados organizados nas pastas corretas (`data/raw`, `data/processed`, etc.)
+- [ ] Modelos treinados salvos em `models/` (se aplicável)
+- [ ] Relatórios finais e intermediários disponíveis em `reports/`, com fontes editáveis (LaTeX, Rmd, etc.)
+- [ ] Dependências documentadas e arquivos de ambiente atualizados (`requirements.txt`, `Project.toml`, etc.)
+- [ ] `.gitignore` configurado para evitar arquivos desnecessários no repositório
+- [ ] Licença do projeto definida em `LICENSE`
+- [ ] Issues e Pull Requests resolvidos e fechados
+- [ ] Versão do projeto definida conforme a política de versionamento
+- [ ] Checklist revisado e validado por pelo menos um membro da equipe
+
+> 💡 **Dica:** Adapte este checklist conforme as necessidades específicas do seu projeto.
+
 ---
 
 ![Logo da Empresa](caminho/para/logo.png)
