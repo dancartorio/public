@@ -140,6 +140,158 @@ reports/
 
 > **Dica:** Sempre que possível, mantenha os arquivos editáveis dos relatórios junto com os PDFs finais para facilitar futuras atualizações e revisões.
 
+## 📤 Instruções para subir e sincronizar alterações com o GitHub
+
+### Subindo suas alterações locais para o GitHub
+
+1. **Adicione os arquivos alterados ao controle de versão:**
+   ```bash
+   git add .
+   ```
+2. **Faça um commit com uma mensagem descritiva:**
+   ```bash
+   git commit -m "Descreva brevemente a alteração realizada"
+   ```
+3. **Envie as alterações para o repositório remoto:**
+   ```bash
+   git push origin main
+   ```
+   > Substitua `main` pelo nome do branch, se estiver usando outro.
+
+---
+
+### Sincronizando seu repositório local com o GitHub (baixando atualizações)
+
+1. **Busque e aplique as alterações do repositório remoto:**
+   ```bash
+   git pull origin main
+   ```
+   > Isso garante que seu repositório local esteja atualizado com o remoto.
+
+---
+
+### Desfazendo alterações locais e retornando à versão do GitHub
+
+> ⚠️ **Atenção:** Este procedimento irá descartar todas as alterações locais não salvas/commitadas!
+
+1. **Descarte todas as alterações locais e volte para a última versão do GitHub:**
+   ```bash
+   git fetch origin
+   git reset --hard origin/main
+   ```
+   > Novamente, substitua `main` pelo nome do branch, se necessário.
+
+---
+
+### Comandos úteis para estatísticos e ciência de dados
+
+- **Executar um script Python:**
+  ```bash
+  python caminho/do/script.py
+  ```
+
+- **Executar um script R:**
+  ```bash
+  Rscript caminho/do/script.R
+  ```
+
+- **Executar um script Julia:**
+  ```bash
+  julia caminho/do/script.jl
+  ```
+
+- **Abrir um Jupyter Notebook:**
+  ```bash
+  jupyter notebook
+  ```
+
+- **Converter um notebook Jupyter para PDF (requer LaTeX instalado):**
+  ```bash
+  jupyter nbconvert --to pdf caminho/do/notebook.ipynb
+  ```
+
+- **Instalar dependências Python:**
+  ```bash
+  pip install -r environment/requirements.txt
+  ```
+
+- **Instalar dependências Julia:**
+  ```bash
+  julia --project=environment -e 'using Pkg; Pkg.instantiate()'
+  ```
+
+- **Instalar dependências R:**
+  ```bash
+  Rscript -e 'install.packages(readLines("environment/DESCRIPTION"))'
+  ```
+
+- **Compilar um arquivo LaTeX para PDF:**
+  ```bash
+  pdflatex caminho/do/arquivo.tex
+  ```
+
+- **Buscar arquivos por extensão (exemplo: todos os .csv no projeto):**
+  ```bash
+  dir /s /b *.csv
+  ```
+
+---
+
+### Comandos Git úteis para o dia a dia
+
+- **Ver o status dos arquivos modificados:**
+  ```bash
+  git status
+  ```
+
+- **Ver o histórico de commits:**
+  ```bash
+  git log --oneline --graph --all
+  ```
+
+- **Criar e trocar para um novo branch:**
+  ```bash
+  git checkout -b nome-do-branch
+  ```
+
+- **Mesclar um branch ao branch atual:**
+  ```bash
+  git merge nome-do-branch
+  ```
+
+- **Ver diferenças entre arquivos modificados e o último commit:**
+  ```bash
+  git diff
+  ```
+
+- **Desfazer alterações em um arquivo específico antes do commit:**
+  ```bash
+  git checkout -- caminho/do/arquivo
+  ```
+
+- **Remover um arquivo do controle de versão:**
+  ```bash
+  git rm caminho/do/arquivo
+  ```
+
+- **Reverter um commit já enviado:**
+  ```bash
+  git revert <hash-do-commit>
+  ```
+
+- **Clonar apenas uma pasta específica de um repositório remoto (via sparse-checkout):**
+  ```bash
+  git clone --filter=blob:none --no-checkout https://github.com/empresa/repositorio.git
+  cd repositorio
+  git sparse-checkout init --cone
+  git sparse-checkout set caminho/da/pasta
+  git checkout main
+  ```
+
+---
+
+> 💡 **Dica:** Consulte sempre a [documentação oficial do Git](https://git-scm.com/doc) para mais comandos e detalhes avançados.
+
 ---
 
 Siga sempre este modelo para novos projetos, garantindo padronização e organização em toda a equipe.
