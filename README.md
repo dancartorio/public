@@ -1,5 +1,22 @@
 # Meu Projeto
 
+<!-- Badges -->
+![GitHub last commit](https://img.shields.io/github/last-commit/SEU_USUARIO/SEU_REPOSITORIO?label=último%20commit)
+![GitHub issues](https://img.shields.io/github/issues/SEU_USUARIO/SEU_REPOSITORIO?label=issues)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/SEU_USUARIO/SEU_REPOSITORIO?label=pull%20requests)
+![GitHub](https://img.shields.io/github/license/SEU_USUARIO/SEU_REPOSITORIO?label=licença)
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)
+![R](https://img.shields.io/badge/R-4.0%2B-blue?logo=r)
+![Julia](https://img.shields.io/badge/Julia-1.10%2B-purple?logo=julia)
+![Jupyter](https://img.shields.io/badge/Jupyter-Notebook-orange?logo=jupyter)
+![Docker](https://img.shields.io/badge/Docker-ready-blue?logo=docker)
+![Data Science](https://img.shields.io/badge/Data%20Science-ready-brightgreen)
+![Status](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)
+
+> Substitua `[SEU_USUARIO/SEU_REPOSITORIO](https://github.com/dancartorio/public)` pela URL do seu repositório no GitHub para os badges funcionarem corretamente.
+
+---
+
 Este repositório segue uma estrutura de diretórios recomendada para projetos de ciência de dados e estatística, suportando scripts e notebooks em Python, Julia e R.
 
 ## Estrutura de Diretórios
