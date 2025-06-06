@@ -440,7 +440,7 @@ Se preferir, pode-se adotar versionamento por data, como `2025.06.06`.
 
 Antes de finalizar e entregar o projeto, verifique se todos os itens abaixo foram cumpridos:
 
-- [ ] README.md atualizado e completo (objetivo, equipe, instruções de uso, dependências, etc.)
+- [x] README.md atualizado e completo (objetivo, equipe, instruções de uso, dependências, etc.)
 - [ ] Estrutura de diretórios conforme o padrão do template
 - [ ] Todos os scripts e notebooks revisados, comentados e funcionando
 - [ ] Dados organizados nas pastas corretas (`data/raw`, `data/processed`, etc.)
