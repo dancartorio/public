@@ -298,28 +298,31 @@ Siga sempre este modelo para novos projetos, garantindo padronização e organiz
 
 ---
 
-# 📊 MODELO EDITÁVEL PARA NOVOS PROJETOS
+# 📊 MODELO EDITÁVEL PARA NOVOS PROJETOS (EDITABLE TEMPLATE FOR NEW PROJECTS)
 
-> **Atenção:** Ao iniciar um novo projeto, apague este bloco de instruções e preencha com as informações do seu projeto.
+> **Atenção / Attention:** Ao iniciar um novo projeto, apague este bloco de instruções e preencha com as informações do seu projeto.  
+> (When starting a new project, delete this instruction block and fill in your project information.)
 
-## Nome do Projeto
+## Nome do Projeto (Project Name)
 
-_Descreva aqui o nome do projeto._
+_Descreva aqui o nome do projeto._  
+_(Describe the project name here.)_
 
-## Descrição
+## Descrição (Description)
 
-_Explique brevemente o objetivo do projeto, contexto, área de aplicação e principais entregáveis._
+_Explique brevemente o objetivo do projeto, contexto, área de aplicação e principais entregáveis._  
+_(Briefly explain the project objective, context, application area, and main deliverables.)_
 
-## Equipe
+## Equipe (Team)
 
-- **Responsável:** _Nome do responsável_
-- **Colaboradores:** _Lista de membros_
+- **Responsável / Lead:** _Nome do responsável (Lead name)_
+- **Colaboradores / Collaborators:** _Lista de membros (List of members)_
 
-## Contato
+## Contato (Contact)
 
-- _E-mail, canal interno, etc._
+- _E-mail, canal interno, etc. (Email, internal channel, etc.)_
 
-## Estrutura de Diretórios
+## Estrutura de Diretórios (Directory Structure)
 
 ```text
 data/
@@ -358,38 +361,52 @@ README.md
 LICENSE
 ```
 
-## Como usar
+## Como usar (How to use)
 
-1. _Explique como iniciar o projeto, rodar scripts, notebooks, etc._
-2. _Inclua instruções para instalação de dependências, se necessário._
-3. _Descreva como gerar relatórios ou outputs principais._
+1. _Explique como iniciar o projeto, rodar scripts, notebooks, etc._  
+   _(Explain how to start the project, run scripts, notebooks, etc.)_
+2. _Inclua instruções para instalação de dependências, se necessário._  
+   _(Include instructions for installing dependencies, if needed.)_
+3. _Descreva como gerar relatórios ou outputs principais._  
+   _(Describe how to generate reports or main outputs.)_
 
-## Dependências
+## Dependências (Dependencies)
 
-- Python: _Versão e principais pacotes_
-- Julia: _Versão e principais pacotes_
-- R: _Versão e principais pacotes_
-- Outros: _Docker, LaTeX, etc._
+- Python: _Versão e principais pacotes (Version and main packages)_
+- Julia: _Versão e principais pacotes (Version and main packages)_
+- R: _Versão e principais pacotes (Version and main packages)_
+- Outros: _Docker, LaTeX, etc. (Others: Docker, LaTeX, etc.)_
 
-## Relatórios
+## Relatórios (Reports)
 
-_Descreva onde encontrar os relatórios finais e intermediários, e onde editar os arquivos-fonte (LaTeX, Rmd, etc.)._
+_Descreva onde encontrar os relatórios finais e intermediários, e onde editar os arquivos-fonte (LaTeX, Rmd, etc.)._  
+_(Describe where to find final and intermediate reports, and where to edit source files.)_
 
-## Comandos úteis
+## Comandos úteis (Useful commands)
 
-- Executar script Python: `python scripts/analysis/regressao-linear.py`
-- Executar script R: `Rscript scripts/analysis/clustering/kmeans.R`
-- Executar script Julia: `julia scripts/analysis/classification/classificador-arvore.jl`
-- Abrir Jupyter Notebook: `jupyter notebook`
-- Instalar dependências Python: `pip install -r environment/requirements.txt`
-- Instalar dependências Julia: `julia --project=environment -e 'using Pkg; Pkg.instantiate()'`
-- Instalar dependências R: `Rscript -e 'install.packages(readLines("environment/DESCRIPTION"))'`
+- Executar script Python: `python scripts/analysis/regressao-linear.py`  
+  (Run Python script)
+- Executar script R: `Rscript scripts/analysis/clustering/kmeans.R`  
+  (Run R script)
+- Executar script Julia: `julia scripts/analysis/classification/classificador-arvore.jl`  
+  (Run Julia script)
+- Abrir Jupyter Notebook: `jupyter notebook`  
+  (Open Jupyter Notebook)
+- Instalar dependências Python: `pip install -r environment/requirements.txt`  
+  (Install Python dependencies)
+- Instalar dependências Julia: `julia --project=environment -e 'using Pkg; Pkg.instantiate()'`  
+  (Install Julia dependencies)
+- Instalar dependências R: `Rscript -e 'install.packages(readLines("environment/DESCRIPTION"))'`  
+  (Install R dependencies)
 
-## Observações
+## Observações (Notes)
 
-- _Inclua observações importantes, limitações, pontos de atenção, etc._
-- _Adapte este modelo conforme necessário para o seu projeto._
+- _Inclua observações importantes, limitações, pontos de atenção, etc._  
+  _(Include important notes, limitations, points of attention, etc.)_
+- _Adapte este modelo conforme necessário para o seu projeto._  
+  _(Adapt this template as needed for your project.)_
 
 ---
 
-> **Apague este bloco após preencher com as informações do seu projeto.**
+> **Apague este bloco após preencher com as informações do seu projeto.**  
+> (Delete this block after filling in your project information.)
