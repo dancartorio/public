@@ -295,3 +295,101 @@ reports/
 ---
 
 Siga sempre este modelo para novos projetos, garantindo padronização e organização em toda a equipe.
+
+---
+
+# 📊 MODELO EDITÁVEL PARA NOVOS PROJETOS
+
+> **Atenção:** Ao iniciar um novo projeto, apague este bloco de instruções e preencha com as informações do seu projeto.
+
+## Nome do Projeto
+
+_Descreva aqui o nome do projeto._
+
+## Descrição
+
+_Explique brevemente o objetivo do projeto, contexto, área de aplicação e principais entregáveis._
+
+## Equipe
+
+- **Responsável:** _Nome do responsável_
+- **Colaboradores:** _Lista de membros_
+
+## Contato
+
+- _E-mail, canal interno, etc._
+
+## Estrutura de Diretórios
+
+```text
+data/
+├── raw/
+├── processed/
+└── external/
+
+notebooks/
+
+scripts/
+├── preprocess/
+├── analysis/
+│   ├── regression/
+│   ├── classification/
+│   ├── clustering/
+│   ├── timeseries/
+│   ├── sampling/
+│   └── bayesian/
+└── visualization/
+
+models/
+
+reports/
+├── figures/
+├── pdf/
+└── latex/
+
+results/
+
+references/
+
+environment/
+
+README.md
+.gitignore
+LICENSE
+```
+
+## Como usar
+
+1. _Explique como iniciar o projeto, rodar scripts, notebooks, etc._
+2. _Inclua instruções para instalação de dependências, se necessário._
+3. _Descreva como gerar relatórios ou outputs principais._
+
+## Dependências
+
+- Python: _Versão e principais pacotes_
+- Julia: _Versão e principais pacotes_
+- R: _Versão e principais pacotes_
+- Outros: _Docker, LaTeX, etc._
+
+## Relatórios
+
+_Descreva onde encontrar os relatórios finais e intermediários, e onde editar os arquivos-fonte (LaTeX, Rmd, etc.)._
+
+## Comandos úteis
+
+- Executar script Python: `python scripts/analysis/regressao-linear.py`
+- Executar script R: `Rscript scripts/analysis/clustering/kmeans.R`
+- Executar script Julia: `julia scripts/analysis/classification/classificador-arvore.jl`
+- Abrir Jupyter Notebook: `jupyter notebook`
+- Instalar dependências Python: `pip install -r environment/requirements.txt`
+- Instalar dependências Julia: `julia --project=environment -e 'using Pkg; Pkg.instantiate()'`
+- Instalar dependências R: `Rscript -e 'install.packages(readLines("environment/DESCRIPTION"))'`
+
+## Observações
+
+- _Inclua observações importantes, limitações, pontos de atenção, etc._
+- _Adapte este modelo conforme necessário para o seu projeto._
+
+---
+
+> **Apague este bloco após preencher com as informações do seu projeto.**
