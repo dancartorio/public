@@ -1,3 +1,6 @@
+✅ 1. Corrigir os valores ao multiplicar por mil
+Na parte em que você cria o Dict com os valores do PIB, é necessário multiplicar por 1_000 para converter de mil reais para reais:
+
 # Dicionário PIB por estado (corrigido para reais)
 pib_dict = Dict{String, Float64}()
 for row in eachrow(df_2020)
