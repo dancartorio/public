@@ -239,3 +239,130 @@ println("\n" * "="^60)
 println("🎉 Análise visual concluída!")
 println("O K2-260 b é um Hot Jupiter extremo, orbitando muito próximo de sua estrela,")
 println("com temperatura superficial de ~$(Int(temp_equilibrio)) K - mais quente que muitas estrelas!")
+
+
+# 🌍 Características do Exoplaneta — Estimativas Derivadas
+
+## ✅ Informações já estimadas:
+
+- **Período orbital**: ~2,627 dias  
+- **Raio do planeta**: ~1,74 R<sub>Júpiter</sub>  
+- **Número de trânsitos observados**: 30  
+- **Profundidade média do trânsito**: 0,0112  
+- **Raio da estrela**: 1,69 R<sub>☉</sub>  
+- **Temperatura da estrela**: 6370 K  
+- **Massa da estrela**: 1,39 M<sub>☉</sub>  
+- **Massa do planeta**: 1,42 M<sub>Júpiter</sub>  
+
+---
+
+## 🔍 Estimativas adicionais:
+
+### 1. 🪐 Distância estrela-planeta (semi-eixo maior)
+
+Usando a 3ª Lei de Kepler simplificada para massas solares e período em anos:
+
+\[
+a = \left( P_{\text{anos}}^2 \cdot M_\star \right)^{1/3}
+\]
+
+- \( P = 2{,}627 \) dias = 0,00719 anos  
+- \( M_\star = 1{,}39\ M_\odot \)
+
+\[
+a \approx (0{,}00719^2 \cdot 1{,}39)^{1/3} \approx 0{,}0385\ \text{UA}
+\]
+
+📌 **Distância aproximada: 0,0385 UA**
+
+---
+
+### 2. 🚀 Velocidade orbital do planeta
+
+\[
+v = \frac{2\pi a}{P}
+\]
+
+- \( a = 0{,}0385\ \text{UA} = 5{,}76 \times 10^9\ \text{m} \)  
+- \( P = 2{,}627 \times 86400 = 226972\ \text{s} \)
+
+\[
+v \approx \frac{2\pi \cdot 5{,}76 \times 10^9}{226972} \approx 159{,}4\ \text{km/s}
+\]
+
+📌 **Velocidade orbital: ~159 km/s**
+
+---
+
+### 3. 🌡️ Temperatura de equilíbrio do planeta
+
+\[
+T_{\text{eq}} = T_\star \cdot \sqrt{\frac{R_\star}{2a}} \cdot (1 - A)^{1/4}
+\]
+
+- \( T_\star = 6370\ K \)  
+- \( R_\star = 1{,}69\ R_\odot = 1{,}17 \times 10^9\ m \)  
+- \( a = 5{,}76 \times 10^9\ m \)  
+- Albedo \( A = 0{,}2 \)
+
+\[
+T_{\text{eq}} \approx 6370 \cdot \sqrt{0{,}1016} \cdot 0{,}945 \approx 1910\ K
+\]
+
+📌 **Temperatura de equilíbrio: ~1910 K**
+
+---
+
+### 4. ⚖️ Densidade do planeta
+
+\[
+\rho = \frac{M}{\frac{4}{3}\pi R^3}
+\]
+
+- \( M = 1{,}42\ M_J = 2{,}70 \times 10^{27}\ \text{kg} \)  
+- \( R = 1{,}74\ R_J = 1{,}244 \times 10^8\ \text{m} \)
+
+\[
+\rho \approx \frac{2{,}70 \times 10^{27}}{\frac{4}{3}\pi (1{,}244 \times 10^8)^3} \approx 1{,}33\ \text{g/cm}^3
+\]
+
+📌 **Densidade estimada: ~1,33 g/cm³**
+
+---
+
+### 5. ⏱️ Duração estimada do trânsito
+
+Aproximação para órbita circular e trânsito central:
+
+\[
+T_{\text{dur}} \approx \frac{R_\star}{\pi a} \cdot P
+\]
+
+Com:
+- \( R_\star = 1{,}17 \times 10^9\ m \)  
+- \( a = 5{,}76 \times 10^9\ m \)  
+- \( P = 226972\ s \)
+
+\[
+T_{\text{dur}} \approx \frac{1{,}17}{\pi \cdot 5{,}76} \cdot 226972 \approx 14{,}7\ \text{mil s} \approx 4{,}1\ h
+\]
+
+📌 **Duração estimada do trânsito: ~4,1 horas**
+
+---
+
+## 📋 Resumo Final
+
+| Propriedade                     | Estimativa                              |
+|--------------------------------|------------------------------------------|
+| Período Orbital                | 2,627 dias                               |
+| Raio do Planeta                | 1,74 R<sub>Júpiter</sub>                |
+| Distância à Estrela (a)        | 0,0385 UA                                |
+| Velocidade Orbital             | ~159 km/s                                |
+| Temperatura de Equilíbrio      | ~1910 K                                  |
+| Densidade                      | ~1,33 g/cm³                              |
+| Duração do Trânsito            | ~4,1 horas                               |
+| Tipo do Planeta                | Hot Jupiter                              |
+| Número de Trânsitos Observados | 30                                       |
+
+
