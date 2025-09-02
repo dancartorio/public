@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Box Kite Animation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100vh;
+            background: linear-gradient(180deg, 
+                #87CEEB 0%, 
+                #98D8E8 30%, 
+                #B4E7CE 60%, 
+                #90EE90 100%);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Nuvens animadas */
+        .clouds {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50px;
+            opacity: 0.8;
+            animation: float 20s infinite linear;
+        }
+
+        .cloud:before {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 50px;
+        }
+
+        .cloud:after {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 50px;
+        }
+
+        .cloud1 {
+            width: 100px;
+            height: 40px;
+            top: 20%;
+            animation-delay: 0s;
+        }
+
+        .cloud1:before {
+            width: 50px;
+            height: 50px;
+            top: -25px;
+            left: 10px;
+        }
+
+        .cloud1:after {
+            width: 60px;
+            height: 40px;
+            top: -15px;
+            right: 10px;
+        }
+
+        .cloud2 {
+            width: 80px;
+            height: 30px;
+            top: 40%;
+            animation-delay: -10s;
+        }
+
+        .cloud2:before {
+            width: 40px;
+            height: 40px;
+            top: -20px;
+            left: 15px;
+        }
+
+        .cloud2:after {
+            width: 50px;
+            height: 30px;
+            top: -10px;
+            right: 15px;
+        }
+
+        .cloud3 {
+            width: 120px;
+            height: 45px;
+            top: 15%;
+            animation-delay: -15s;
+        }
+
+        .cloud3:before {
+            width: 60px;
+            height: 60px;
+            top: -30px;
+            left: 20px;
+        }
+
+        .cloud3:after {
+            width: 70px;
+            height: 45px;
+            top: -20px;
+            right: 15px;
+        }
+
+        .cloud4 {
+            width: 90px;
+            height: 35px;
+            top: 55%;
+            animation-delay: -5s;
+        }
+
+        .cloud4:before {
+            width: 45px;
+            height: 45px;
+            top: -22px;
+            left: 12px;
+        }
+
+        .cloud4:after {
+            width: 55px;
+            height: 35px;
+            top: -12px;
+            right: 12px;
+        }
+
+        .cloud5 {
+            width: 70px;
+            height: 25px;
+            top: 35%;
+            animation-delay: -20s;
+        }
+
+        .cloud5:before {
+            width: 35px;
+            height: 35px;
+            top: -17px;
+            left: 10px;
+        }
+
+        .cloud5:after {
+            width: 40px;
+            height: 25px;
+            top: -8px;
+            right: 10px;
+        }
+
+        .cloud6 {
+            width: 110px;
+            height: 40px;
+            top: 8%;
+            animation-delay: -25s;
+        }
+
+        .cloud6:before {
+            width: 55px;
+            height: 55px;
+            top: -27px;
+            left: 18px;
+        }
+
+        .cloud6:after {
+            width: 65px;
+            height: 40px;
+            top: -18px;
+            right: 18px;
+        }
+
+        @keyframes float {
+            0% {
+                left: -150px;
+            }
+            100% {
+                left: calc(100% + 150px);
+            }
+        }
+
+        /* Pipa 3D baseada no exemplo fornecido */
+        #animation {
+            position: fixed;
+            width: 200px;
+            height: 200px;
+            top: 30%;
+            left: 40%;
+            z-index: 1;
+            animation: kiteX 14s ease-in-out 0s infinite alternate none;
+            -webkit-animation: kiteX 14s ease-in-out 0s infinite alternate;
+        }
+
+        .vertWrap {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            top: 0%;
+            left: 0%;
+            z-index: 1;
+            animation: kiteY 12s ease-in-out -4s infinite alternate none;
+            -webkit-animation: kiteY 12s ease-in-out -4s infinite alternate none;
+        }
+
+        .kite {
+            position: absolute;
+            top: 50px;
+            left: 50px;
+            width: 200px;
+            height: 200px;
+            -webkit-transform: rotate(45deg) scale(0.6, 0.9);
+            -moz-transform: rotate(45deg) scale(0.6, 0.9);
+            -ms-transform: rotate(45deg) scale(0.6, 0.9);
+            -o-transform: rotate(45deg) scale(0.6, 0.9);
+            transform: rotate(45deg) scale(0.6, 0.9);
+        }
+
+        .box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 140px;
+            height: 90px;
+        }
+
+        .front {
+            position: absolute;
+            z-index: 2;
+            opacity: 0.95;
+        }
+
+        .back {
+            position: absolute;
+            z-index: 1;
+            opacity: 0.95;
+        }
+
+        .front:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 70px;
+            height: 40px;
+            background-color: rgba(255, 0, 0, 1);
+            -webkit-transform: skew(0deg, -20deg);
+            transform: skew(0deg, -20deg);
+        }
+
+        .front:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 70px;
+            width: 70px;
+            height: 40px;
+            background-color: rgba(255, 0, 0, 1);
+            -webkit-transform: skew(0deg, 20deg);
+            transform: skew(0deg, 20deg);
+        }
+
+        .back:before {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 0px;
+            width: 70px;
+            height: 40px;
+            background-color: rgba(0, 255, 0, 1);
+            -webkit-transform: skew(0deg, 20deg);
+            transform: skew(0deg, 20deg);
+        }
+
+        .back:after {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 70px;
+            width: 70px;
+            height: 40px;
+            background-color: rgba(0, 255, 0, 1);
+            -webkit-transform: skew(0deg, -20deg);
+            transform: skew(0deg, -20deg);
+        }
+
+        /* Cores da pipa - lilás */
+        .kite .box.top .front:before {
+            background-color: #B39DDB; /* lilás claro */
+        }
+
+        .kite .box.top .front:after {
+            background-color: #9575CD; /* lilás médio */
+        }
+
+        .kite .box.top .back:before {
+            background-color: #7E57C2; /* lilás escuro */
+        }
+
+        .kite .box.top .back:after {
+            background-color: #CE93D8; /* lilás rosado */
+        }
+
+        .kite .box.bottom .front:before {
+            background-color: #B39DDB; /* lilás claro */
+        }
+
+        .kite .box.bottom .front:after {
+            background-color: #9575CD; /* lilás médio */
+        }
+
+        .kite .box.bottom .back:before {
+            background-color: #7E57C2; /* lilás escuro */
+        }
+
+        .kite .box.bottom .back:after {
+            background-color: #CE93D8; /* lilás rosado */
+        }
+
+        .kite .box.top {
+            margin-top: -80px;
+        }
+
+        .kite .box.bottom {
+            margin-top: 10px;
+        }
+
+        /* Linhas da pipa */
+        .vertWrap span {
+            display: block;
+            position: absolute;
+            top: 50%;
+            right: 50%;
+            z-index: -1;
+            height: 1000%;
+            border-right: 1px solid rgba(45, 55, 60, 0.26);
+            -webkit-transform: rotate(-45deg);
+            -webkit-transform-origin: top center;
+            transform: rotate(-45deg);
+            transform-origin: top center;
+        }
+
+        .vertWrap span:nth-of-type(1) {
+            margin-top: 116px;
+            margin-right: 17px;
+        }
+
+        .vertWrap span:nth-of-type(2) {
+            margin-top: -35px;
+            margin-right: -119px;
+            -webkit-transform: rotate(-40deg);
+            transform: rotate(-40deg);
+        }
+
+        /* Estruturas da pipa */
+        .sticks {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+        }
+
+        .sticks div {
+            position: absolute;
+            height: 136px;
+            border-radius: 5px;
+            border-right: 2px solid rgba(200, 180, 110, 1);
+            border-left: 3px solid rgba(240, 210, 140, 1);
+            box-shadow: 0 1px 0 0 rgba(200, 180, 110, 1);
+            margin-left: -4px;
+        }
+
+        .sticks div:nth-of-type(1) {
+            z-index: -100;
+            margin-top: -45px;
+            margin-left: 68px;
+        }
+
+        .sticks div:nth-of-type(2) {
+            z-index: 100;
+            margin-top: -96px;
+            margin-left: 68px;
+        }
+
+        .sticks div:nth-of-type(3) {
+            z-index: 100;
+            margin-top: -70px;
+        }
+
+        .sticks div:nth-of-type(4) {
+            z-index: 100;
+            margin-top: -70px;
+            margin-left: 136px;
+        }
+
+        /* Animações da pipa - mais devagar e mais padrões */
+        @keyframes kiteX {
+            0%   { transform: translate(0px, 0px); }
+            10%  { transform: translate(80px, -10px) rotate(-2deg); }
+            20%  { transform: translate(160px, 10px) rotate(3deg); }
+            30%  { transform: translate(240px, -20px) rotate(-4deg); }
+            40%  { transform: translate(320px, 0px) rotate(2deg); }
+            50%  { transform: translate(200px, 30px) rotate(-3deg); }
+            60%  { transform: translate(100px, -15px) rotate(5deg); }
+            70%  { transform: translate(180px, 20px) rotate(-2deg); }
+            80%  { transform: translate(260px, -10px) rotate(3deg); }
+            90%  { transform: translate(340px, 15px) rotate(-4deg); }
+            100% { transform: translate(0px, 0px); }
+        }
+
+        @keyframes kiteY {
+            0%   { transform: translate(0px, -40px) rotate(0deg); }
+            12%  { transform: translate(0px, 20px) rotate(2deg); }
+            25%  { transform: translate(0px, -10px) rotate(-2deg); }
+            37%  { transform: translate(0px, 40px) rotate(3deg); }
+            50%  { transform: translate(0px, -30px) rotate(-3deg); }
+            62%  { transform: translate(0px, 50px) rotate(2deg); }
+            75%  { transform: translate(0px, -20px) rotate(-2deg); }
+            87%  { transform: translate(0px, 30px) rotate(4deg); }
+            100% { transform: translate(0px, -40px) rotate(0deg); }
+        }
+
+        /* Sol */
+        .sun {
+            position: absolute;
+            top: 10%;
+            right: 15%;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, #FFD700, #FFA500);
+            border-radius: 50%;
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        .sun:before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: radial-gradient(circle, rgba(255,215,0,0.3), transparent);
+            border-radius: 50%;
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes glow {
+            0% {
+                opacity: 0.5;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0.8;
+                transform: scale(1.2);
+            }
+        }
+
+        /* Pássaros voando */
+        .birds {
+            position: absolute;
+            top: 25%;
+            right: 30%;
+            animation: birdsfly 12s linear infinite;
+        }
+
+        .bird {
+            display: inline-block;
+            margin: 0 5px;
+            animation: flap 0.5s ease-in-out infinite alternate;
+        }
+
+        .bird:before,
+        .bird:after {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 2px;
+            background: #333;
+            border-radius: 50%;
+            margin: 0 1px;
+            transform: rotate(-20deg);
+            animation: wingflap 0.5s ease-in-out infinite alternate;
+        }
+
+        .bird:after {
+            transform: rotate(20deg);
+            animation-delay: 0.25s;
+        }
+
+        @keyframes birdsfly {
+            0% {
+                right: -100px;
+            }
+            100% {
+                right: calc(100% + 100px);
+            }
+        }
+
+        @keyframes flap {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(-3px);
+            }
+        }
+
+        @keyframes wingflap {
+            0% {
+                transform: rotate(-20deg);
+            }
+            100% {
+                transform: rotate(-35deg);
+            }
+        }
+
+        /* Removido CSS das árvores */
+        .trees,
+        .tree,
+        .tree:before,
+        .tree:after,
+        .tree1,
+        .tree2,
+        .tree3,
+        .tree4,
+        .tree5,
+        .tree6,
+        .tree7,
+        .tree8,
+        .tree.small,
+        .tree.medium,
+        .tree.large {
+            display: none !important;
+        }
+
+        /* Efeito de brilho suave no céu */
+        .sky-glow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            background: radial-gradient(circle at 60% 20%, rgba(255,255,255,0.18) 0%, transparent 70%);
+            z-index: 0;
+            animation: skyGlowAnim 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes skyGlowAnim {
+            0% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        /* Efeito de partículas brilhando */
+        #particles {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #fff 60%, #B39DDB 100%);
+            opacity: 0.7;
+            animation: sparkle 2.5s infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.7; transform: scale(1);}
+            50% { opacity: 1; transform: scale(1.4);}
+        }
+
+        /* Efeito de vento na pipa */
+        #animation::after {
+            content: '';
+            position: absolute;
+            left: 60px;
+            top: 160px;
+            width: 80px;
+            height: 20px;
+            background: linear-gradient(90deg, rgba(180,180,255,0.18) 0%, rgba(180,180,255,0.01) 100%);
+            border-radius: 50%;
+            filter: blur(2px);
+            z-index: 0;
+            animation: windMove 2.5s infinite linear;
+        }
+
+        @keyframes windMove {
+            0% { left: 60px; opacity: 0.5;}
+            50% { left: 90px; opacity: 0.8;}
+            100% { left: 60px; opacity: 0.5;}
+        }
+    </style>
+</head>
+<body>
+    <!-- Nuvens -->
+    <div class="clouds">
+        <div class="cloud cloud1"></div>
+        <div class="cloud cloud2"></div>
+        <div class="cloud cloud3"></div>
+        <div class="cloud cloud4"></div>
+        <div class="cloud cloud5"></div>
+        <div class="cloud cloud6"></div>
+    </div>
+
+    <!-- Sol -->
+    <div class="sun"></div>
+
+    <!-- Pássaros -->
+    <div class="birds">
+        <div class="bird"></div>
+        <div class="bird"></div>
+        <div class="bird"></div>
+    </div>
+
+    <!-- Efeito de brilho no céu -->
+    <div class="sky-glow"></div>
+
+    <!-- Efeito de partículas brilhando -->
+    <div id="particles"></div>
+
+    <!-- Pipa 3D -->
+    <div id="animation">
+        <div class="vertWrap">
+            <div class="kite">
+                <div class="box top">
+                    <div class="front"></div>
+                    <div class="back"></div>
+                </div>
+                <div class="box bottom">
+                    <div class="front"></div>
+                    <div class="back"></div>
+                </div>
+                <div class="sticks">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+            <span></span>
+        </div>
+    </div>
+
+    <!-- Árvores no horizonte -->
+    <!-- Removido bloco das árvores -->
+    <!-- <div class="trees">
+        <div class="tree tree1 small"></div>
+        <div class="tree tree2 medium"></div>
+        <div class="tree tree3 large"></div>
+        <div class="tree tree4 medium"></div>
+        <div class="tree tree5 small"></div>
+        <div class="tree tree6 large"></div>
+        <div class="tree tree7 medium"></div>
+        <div class="tree tree8 small"></div>
+    </div> -->
+
+    <script>
+    // Remove animações automáticas
+    const animation = document.getElementById('animation');
+    animation.style.animation = 'none';
+    animation.style.left = '40%';
+    animation.style.top = '30%';
+
+    document.querySelector('.vertWrap').style.animation = 'none';
+
+    // Variáveis para posição alvo e atual
+    let targetX = window.innerWidth * 0.4;
+    let targetY = window.innerHeight * 0.3;
+    let currentX = targetX;
+    let currentY = targetY;
+
+    // Atualiza posição alvo ao mover o mouse
+    document.addEventListener('mousemove', function(e) {
+        const kiteWidth = animation.offsetWidth;
+        const kiteHeight = animation.offsetHeight;
+        targetX = e.clientX - kiteWidth / 2;
+        targetY = e.clientY - kiteHeight / 2;
+        // Limita para não sair da tela
+        targetX = Math.max(0, Math.min(window.innerWidth - kiteWidth, targetX));
+        targetY = Math.max(0, Math.min(window.innerHeight - kiteHeight, targetY));
+    });
+
+    // Mantém animação de movimento suave e padrão de voo
+    function animateKite() {
+        // Suavidade: aproxima a posição atual da alvo
+        currentX += (targetX - currentX) * 0.08;
+        currentY += (targetY - currentY) * 0.08;
+
+        // Movimento adicional de voo (oscilação)
+        const time = Date.now() / 700;
+        const offsetX = Math.sin(time) * 30;
+        const offsetY = Math.cos(time * 1.3) * 18;
+
+        animation.style.left = (currentX + offsetX) + 'px';
+        animation.style.top = (currentY + offsetY) + 'px';
+
+        requestAnimationFrame(animateKite);
+    }
+    animateKite();
+
+    // Efeito de partículas brilhando
+    const particles = document.getElementById('particles');
+    function createParticles(qtd) {
+        for (let i = 0; i < qtd; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            // Distribui aleatoriamente pelo céu
+            p.style.top = (Math.random() * 70 + 5) + 'vh';
+            p.style.left = (Math.random() * 100) + 'vw';
+            p.style.animationDelay = (Math.random() * 2.5) + 's';
+            particles.appendChild(p);
+        }
+    }
+    createParticles(30);
+    </script>
+</body>
+</html>
