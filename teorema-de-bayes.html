@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Teorema de Bayes — Interativo</title>
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #1c1c1c;
+      --text-dark: #616161;
+
+      --posterior: rgba(61, 105, 155, 0.8);
+      --likelihood: #ff9f1c;
+      --prior: rgba(79, 155, 108, 0.9);
+      --marginal: rgba(207, 79, 79, 0.9);
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      background: var(--bg-dark);
+      color: var(--text-dark);
+    }
+
+    .wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 980px;
+      border-radius: 14px;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .formula-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      flex-wrap: wrap;
+      position: relative;
+    }
+
+    .formula-divider {
+      width: 80%;
+      height: 2px;
+      background-color: var(--text-dark);
+      margin: 8px 0;
+    }
+
+    .part {
+      display: inline-block;
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 10px;
+      user-select: none;
+      transition: transform .25s ease;
+      position: relative;
+    }
+
+    .posterior { color: var(--posterior); }
+    .likelihood { color: var(--likelihood); }
+    .prior { color: var(--prior); }
+    .marginal { color: var(--marginal); }
+
+    .part.selected { z-index: 10; }
+
+    .op {
+      color: var(--text-dark);
+      font-weight: 700;
+      font-size: 2.05em;
+      padding: 0 6px;
+    }
+
+    .katex {
+      font-size: clamp(28px, 7.6vw, 68px);
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    /* modal explicativo */
+    .explain-modal {
+      position: fixed;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      color: var(--text-dark);
+      padding: 14px 16px;
+      font-size: 0.95rem;
+      max-width: 280px;
+      line-height: 1.4;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s ease, transform .25s ease;
+      backdrop-filter: blur(6px);
+      z-index: 1000;
+    }
+
+    .explain-modal.show {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .modal-title {
+      font-weight: 700;
+      margin-bottom: 6px;
+      font-size: 1rem;
+    }
+
+    .modal-divider {
+      width: 100%;
+      height: 1px;
+      background-color: rgba(255,255,255,0.2);
+      margin: 6px 0 8px;
+    }
+
+    /* seta de ligação */
+    .arrow {
+      position: fixed;
+      width: 2px;
+      background: currentColor;
+      z-index: 999;
+      opacity: 0;
+      transition: opacity .25s ease;
+    }
+
+    .arrow.show {
+      opacity: 0.6;
+    }
+
+    @media (max-width: 640px) {
+      .card { padding: 18px; }
+      .katex { font-size: clamp(22px, 10vw, 48px); }
+      .part { padding: 6px 8px; border-radius: 8px; }
+      .explain-modal { max-width: 240px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <main class="card" role="main" aria-labelledby="title">
+      <h1 id="title" style="position:absolute;left:-9999px;">Teorema de Bayes</h1>
+
+      <div class="formula-wrap" aria-label="Fórmula de Bayes interativa">
+        <span class="part posterior" data-part="posterior" tabindex="0" title="Posterior: P(A|B)"></span>
+        <span class="op">=</span>
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <div>
+            <span class="part likelihood" data-part="likelihood" tabindex="0" title="Likelihood: P(B|A)"></span>
+            <span class="op">·</span>
+            <span class="part prior" data-part="prior" tabindex="0" title="Prior: P(A)"></span>
+          </div>
+          <div class="formula-divider"></div>
+          <div>
+            <span class="part marginal" data-part="marginal" tabindex="0" title="Marginal: P(B)"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="explain-modal" id="explainModal"></div>
+      <div class="arrow" id="arrow"></div>
+    </main>
+  </div>
+
+  <script>
+    const parts = {
+      posterior: "\\displaystyle P(A\\mid B)",
+      likelihood: "\\displaystyle P(B\\mid A)",
+      prior: "\\displaystyle P(A)",
+      marginal: "\\displaystyle P(B)"
+    };
+
+    const explanations = {
+      posterior: {
+        title: "Posterior",
+        text: "Probabilidade de A dado que B ocorreu. Atualiza a crença sobre A após observar B."
+      },
+      likelihood: {
+        title: "Likelihood",
+        text: "Probabilidade de observar B se A for verdade. Indica o quão compatível é A com os dados B."
+      },
+      prior: {
+        title: "Prior",
+        text: "Crença inicial sobre A antes de observar B. Pode vir de conhecimento prévio ou suposições."
+      },
+      marginal: {
+        title: "Marginal (Evidência)",
+        text: "Probabilidade de observar B sob todos os cenários; normaliza a equação."
+      }
+    };
+
+    function renderParts() {
+      document.querySelectorAll(".part").forEach(el => {
+        const key = el.dataset.part;
+        try {
+          el.innerHTML = katex.renderToString(parts[key], { throwOnError: false });
+        } catch {
+          el.textContent = parts[key];
+        }
+      });
+    }
+
+    function initInteraction() {
+      const partEls = Array.from(document.querySelectorAll(".part"));
+      const modal = document.getElementById("explainModal");
+      const arrow = document.getElementById("arrow");
+      let selectedEl = null;
+
+      function clearSelection() {
+        partEls.forEach(p => {
+          p.classList.remove("selected");
+          p.style.transform = "";
+        });
+        modal.classList.remove("show");
+        arrow.classList.remove("show");
+        selectedEl = null;
+      }
+
+      function selectPart(el) {
+        const key = el.dataset.part;
+
+        if (selectedEl === el) {
+          clearSelection();
+          return;
+        }
+
+        clearSelection();
+        selectedEl = el;
+        el.classList.add("selected");
+
+        // deslocamento visual
+        el.style.transform = key === "marginal" ? "translateY(10px)" : "translateY(-10px)";
+
+        const color = getComputedStyle(document.documentElement).getPropertyValue(`--${key}`).trim();
+        modal.style.color = color;
+        arrow.style.background = color;
+
+        // título e corpo formatados
+        modal.innerHTML = `
+          <div class="modal-title">${explanations[key].title}</div>
+          <div class="modal-divider"></div>
+          <div class="modal-text">${explanations[key].text}</div>
+        `;
+
+        const rect = el.getBoundingClientRect();
+        const modalOffset = 80;
+        let top, left;
+
+        // posicionamento fixo (independente do scroll)
+        if (key === "marginal") {
+          top = rect.bottom + modalOffset;
+        } else if (rect.top > modalOffset + 120) {
+          top = rect.top - modalOffset - 40;
+        } else {
+          top = rect.top;
+          left = rect.right + 60;
+        }
+
+        if (!left) left = rect.left + rect.width / 2 - 100;
+
+        modal.style.top = `${top}px`;
+        modal.style.left = `${left}px`;
+
+        const modalRect = modal.getBoundingClientRect();
+        const startY = key === "marginal" ? rect.bottom : rect.top;
+        const endY = key === "marginal" ? modalRect.top : modalRect.bottom;
+
+        arrow.style.left = `${rect.left + rect.width / 2}px`;
+        arrow.style.top = `${Math.min(startY, endY)}px`;
+        arrow.style.height = `${Math.abs(endY - startY)}px`;
+
+        setTimeout(() => {
+          modal.classList.add("show");
+          arrow.classList.add("show");
+        }, 10);
+      }
+
+      partEls.forEach(el => {
+        el.addEventListener("click", () => selectPart(el));
+        el.addEventListener("keydown", e => {
+          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectPart(el); }
+          if (e.key === "Escape") clearSelection();
+        });
+      });
+
+      document.addEventListener("click", e => {
+        if (!e.target.closest(".part")) clearSelection();
+      });
+
+      window.addEventListener("scroll", clearSelection);
+      window.addEventListener("resize", clearSelection);
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      if (window.katex) renderParts();
+      else {
+        const t = setInterval(() => {
+          if (window.katex) { clearInterval(t); renderParts(); }
+        }, 50);
+        setTimeout(() => clearInterval(t), 3000);
+      }
+      initInteraction();
+    });
+  </script>
+</body>
+</html>
