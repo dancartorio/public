@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da Velha</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Indie+Flower&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Indie Flower', cursive;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #e8d5b7;
+            position: relative;
+            padding: 20px;
+        }
+
+        /* Estilo: folha de caderno escolar */
+        body {
+            font-family: 'Indie Flower', cursive;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #fffdf6; /* cor de papel */
+            position: relative;
+            padding: 20px;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                to bottom,
+                transparent 0,
+                transparent 28px,
+                rgba(99, 155, 215, 0.22) 28px,
+                rgba(99, 155, 215, 0.22) 30px
+            );
+            pointer-events: none;
+            z-index: 0;
+            animation: drawLines 0.9s ease-out both;
+            background-size: 100% 40px;
+            background-position: 0 0;
+        }
+
+        /* Linha vertical de margem (lado esquerdo) */
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 48px; /* distância da borda esquerda - ajuste conforme necessário */
+            width: 4px;
+            background: linear-gradient(180deg, #ff9aa2, #ff6b81);
+            opacity: 0.95;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            text-align: center;
+            background: #fef9e7;
+            padding: 40px;
+            border-radius: 5px;
+            box-shadow: 
+                0 2px 5px rgba(0,0,0,0.1),
+                inset 0 0 100px rgba(218, 165, 105, 0.1);
+            position: relative;
+            border: 1px solid #d4a574;
+            max-width: 600px;
+            z-index: 2;
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
+        }
+
+        /* Removido indicador interno para evitar duplicar a margem */
+        .container::before {
+            display: none;
+        }
+
+        .container:hover {
+            transform: translateY(-8px) rotate(-0.5deg);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            color: #2c5f8d;
+            margin-bottom: 10px;
+            font-size: 3em;
+            transform: rotate(-2deg);
+            font-family: 'Caveat', cursive;
+            font-weight: 700;
+        }
+
+        .mode-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .mode-btn {
+            background: transparent;
+            color: #2c5f8d;
+            border: 2px solid #2c5f8d;
+            padding: 8px 20px;
+            font-size: 1.2em;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Indie Flower', cursive;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            transform: rotate(-1deg);
+        }
+
+        .mode-btn:hover {
+            background: rgba(44, 95, 141, 0.1);
+        }
+
+        .mode-btn.active {
+            background: #2c5f8d;
+            color: #fef9e7;
+            box-shadow: 2px 2px 0px rgba(44, 95, 141, 0.3);
+        }
+
+        .difficulty-selector {
+            display: none;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+
+        .difficulty-selector.show {
+            display: flex;
+        }
+
+        .difficulty-btn {
+            background: transparent;
+            color: #c41e3a;
+            border: 2px dashed #c41e3a;
+            padding: 5px 15px;
+            font-size: 1em;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Indie Flower', cursive;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .difficulty-btn:hover {
+            background: rgba(196, 30, 58, 0.1);
+        }
+
+        .difficulty-btn.active {
+            background: #c41e3a;
+            color: #fef9e7;
+        }
+
+        .info {
+            font-size: 1.8em;
+            margin: 20px 0;
+            color: #1a4d2e;
+            font-weight: 600;
+            min-height: 50px;
+            transform: rotate(-1deg);
+            animation: infoPulse 3s ease-in-out infinite;
+        }
+
+        /* animação de desenho das linhas do caderno */
+        @keyframes drawLines {
+            0% { background-position: 0 -40px; opacity: 0; }
+            60% { opacity: 1; }
+            100% { background-position: 0 0; opacity: 1; }
+        }
+
+        /* pulso suave no texto de informação */
+        @keyframes infoPulse {
+            0% { transform: rotate(-1deg) scale(1); box-shadow: none; }
+            50% { transform: rotate(-1deg) scale(1.02); box-shadow: 0 0 14px rgba(44,95,141,0.08); }
+            100% { transform: rotate(-1deg) scale(1); box-shadow: none; }
+        }
+
+        /* leve brilho na margem vertical */
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 48px; /* distância da borda esquerda - ajuste conforme necessário */
+            width: 4px;
+            background: linear-gradient(180deg, #ff9aa2, #ff6b81);
+            opacity: 0.95;
+            pointer-events: none;
+            z-index: 0;
+            animation: shimmer 3.5s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% { opacity: 0.95; }
+            50% { opacity: 0.6; }
+            100% { opacity: 0.95; }
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 130px);
+            grid-template-rows: repeat(3, 130px);
+            gap: 0;
+            margin: 30px auto;
+            justify-content: center;
+            position: relative;
+            transform: rotate(1deg);
+            width: 390px;
+            height: 390px;
+        }
+
+        .line {
+            position: absolute;
+            background: #000000;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .line.vertical {
+            width: 2px;
+            height: 390px;
+            top: 0;
+        }
+
+        .line.horizontal {
+            width: 390px;
+            height: 2px;
+            left: 0;
+        }
+
+        .line.v1 {
+            left: 130px;
+            transform: none;
+        }
+
+        .line.v2 {
+            left: 260px;
+            transform: none;
+        }
+
+        .line.h1 {
+            top: 130px;
+            transform: none;
+        }
+
+        .line.h2 {
+            top: 260px;
+            transform: none;
+        }
+
+        .cell {
+            background: transparent;
+            border: none;
+            font-size: 4.5em;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s ease;
+            font-family: 'Caveat', cursive;
+            position: relative;
+            z-index: 2;
+            width: 130px;
+            height: 130px;
+        }
+
+        .cell:hover {
+            background: rgba(44, 95, 141, 0.05);
+        }
+
+        .cell.x {
+            color: #c41e3a;
+            text-shadow: 2px 2px 0px rgba(196, 30, 58, 0.2);
+            animation: drawSymbol 0.3s ease-out;
+        }
+
+        .cell.o {
+            color: #2c5f8d;
+            text-shadow: 2px 2px 0px rgba(44, 95, 141, 0.2);
+            animation: drawSymbol 0.3s ease-out;
+        }
+
+        @keyframes drawSymbol {
+            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+            50% { transform: scale(1.2) rotate(10deg); }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        .winning-line {
+            position: absolute;
+            background: #c41e3a;
+            z-index: 10;
+            pointer-events: none;
+            box-shadow: 0 0 8px rgba(196, 30, 58, 0.5);
+        }
+
+        .winning-line.horizontal {
+            width: 0;
+            height: 6px;
+            animation: drawHorizontal 0.6s ease-out forwards;
+            transform: rotate(-2deg);
+        }
+
+        .winning-line.vertical {
+            width: 6px;
+            height: 0;
+            animation: drawVertical 0.6s ease-out forwards;
+            transform: rotate(2deg);
+        }
+
+        .winning-line.diagonal-right {
+            width: 6px;
+            height: 0;
+            animation: drawDiagonal 0.6s ease-out forwards;
+            transform-origin: top left;
+        }
+
+        .winning-line.diagonal-left {
+            width: 6px;
+            height: 0;
+            animation: drawDiagonal 0.6s ease-out forwards;
+            transform-origin: top right;
+        }
+
+        @keyframes drawHorizontal {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes drawVertical {
+            from { height: 0; }
+            to { height: 100%; }
+        }
+
+        @keyframes drawDiagonal {
+            from { height: 0; }
+            to { height: 141%; }
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: #fef9e7;
+            color: #2c5f8d;
+            border: 3px solid #2c5f8d;
+            padding: 12px 35px;
+            font-size: 1.5em;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-family: 'Indie Flower', cursive;
+            box-shadow: 3px 3px 0px rgba(44, 95, 141, 0.3);
+            transform: rotate(-1deg);
+        }
+
+        button:hover {
+            transform: rotate(-1deg) translate(-2px, -2px);
+            box-shadow: 5px 5px 0px rgba(44, 95, 141, 0.4);
+        }
+
+        button:active {
+            transform: rotate(-1deg) translate(1px, 1px);
+            box-shadow: 1px 1px 0px rgba(44, 95, 141, 0.3);
+        }
+
+        button.secondary {
+            border-color: #c41e3a;
+            color: #c41e3a;
+            box-shadow: 3px 3px 0px rgba(196, 30, 58, 0.3);
+            transform: rotate(1deg);
+            padding: 10px 25px;
+            font-size: 1.2em;
+        }
+
+        button.secondary:hover {
+            transform: rotate(1deg) translate(-2px, -2px);
+            box-shadow: 5px 5px 0px rgba(196, 30, 58, 0.4);
+        }
+
+        .score {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 25px;
+            font-size: 1.4em;
+            flex-wrap: wrap;
+        }
+
+        .score-item {
+            padding: 10px 20px;
+            background: transparent;
+            border: 2px dashed #2c5f8d;
+            border-radius: 8px;
+            font-weight: 600;
+            transform: rotate(1deg);
+        }
+
+        .score-item:nth-child(2) {
+            transform: rotate(-1deg);
+        }
+
+        .score-item span {
+            color: #c41e3a;
+            font-size: 1.3em;
+            font-weight: 700;
+        }
+
+        .doodle {
+            position: absolute;
+            font-size: 2em;
+            opacity: 0.15;
+            transform: rotate(-15deg);
+        }
+
+        .star1 { top: 20px; right: 40px; }
+        .star2 { bottom: 30px; left: 50px; transform: rotate(25deg); }
+
+        .dev-logo {
+            position: absolute;
+            top: 20px;
+            left: 50px;
+            width: 100px;
+            opacity: 0.7;
+            transform: rotate(-3deg);
+            transition: opacity 0.3s ease;
+        }
+
+        .dev-logo:hover {
+            opacity: 1;
+        }
+
+        .stats {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(44, 95, 141, 0.05);
+            border-radius: 8px;
+            border: 1px dashed #2c5f8d;
+            font-size: 1.1em;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            margin: 5px 0;
+        }
+
+        .undo-btn {
+            opacity: 0.7;
+        }
+
+        .undo-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 600px) {
+            .board {
+                grid-template-columns: repeat(3, 100px);
+                grid-template-rows: repeat(3, 100px);
+                width: 300px;
+                height: 300px;
+            }
+            
+            .line.vertical { height: 300px; }
+            .line.horizontal { width: 300px; }
+            
+            .line.v1 { left: 100px; }
+            .line.v2 { left: 200px; }
+            .line.h1 { top: 100px; }
+            .line.h2 { top: 200px; }
+
+            .cell {
+                font-size: 3.5em;
+                width: 100px;
+                height: 100px;
+            }
+
+            h1 {
+                font-size: 2.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://raw.githubusercontent.com/morrisonkuhlsen/morrisonkuhlsen/refs/heads/master/assets/images/mklogo-black.png" alt="MK Dev" class="dev-logo">
+        
+        <div class="doodle star1">★</div>
+        <div class="doodle star2">★</div>
+        
+        <h1>Jogo da Velha</h1>
+
+        <div class="mode-selector">
+            <button class="mode-btn active" onclick="setMode('pvp')">👥 2 Jogadores</button>
+            <button class="mode-btn" onclick="setMode('ai')">🤖 vs Computador</button>
+        </div>
+
+        <div class="difficulty-selector" id="difficultySelector">
+            <button class="difficulty-btn active" onclick="setDifficulty('easy')">Fácil</button>
+            <button class="difficulty-btn" onclick="setDifficulty('medium')">Médio</button>
+            <button class="difficulty-btn" onclick="setDifficulty('hard')">Impossível</button>
+        </div>
+
+        <div class="info" id="info">Vez do X</div>
+        
+        <div class="board" id="board">
+            <div class="line vertical v1"></div>
+            <div class="line vertical v2"></div>
+            <div class="line horizontal h1"></div>
+            <div class="line horizontal h2"></div>
+            
+            <div class="cell" data-index="0"></div>
+            <div class="cell" data-index="1"></div>
+            <div class="cell" data-index="2"></div>
+            <div class="cell" data-index="3"></div>
+            <div class="cell" data-index="4"></div>
+            <div class="cell" data-index="5"></div>
+            <div class="cell" data-index="6"></div>
+            <div class="cell" data-index="7"></div>
+            <div class="cell" data-index="8"></div>
+        </div>
+
+        <div class="controls">
+            <button onclick="resetGame()">🔄 Novo Jogo</button>
+            <button class="secondary" onclick="resetScores()">🗑️ Zerar Placar</button>
+        </div>
+
+        <div class="score">
+            <div class="score-item">X: <span id="scoreX">0</span></div>
+            <div class="score-item">Empates: <span id="scoreDraw">0</span></div>
+            <div class="score-item">O: <span id="scoreO">0</span></div>
+        </div>
+
+        <div class="stats">
+            <div class="stats-row">
+                <span>🎮 Partidas: <strong id="totalGames">0</strong></span>
+                <span>⏱️ Melhor tempo: <strong id="bestTime">--</strong></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let board = ['', '', '', '', '', '', '', '', ''];
+        let currentPlayer = 'X';
+        let gameActive = true;
+        let scores = { X: 0, O: 0, draw: 0 };
+        let gameMode = 'pvp';
+        let difficulty = 'easy';
+        let totalGames = 0;
+        let bestTime = null;
+        let gameStartTime = null;
+
+        const winningConditions = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
+        ];
+
+        const cells = document.querySelectorAll('.cell');
+        const infoDisplay = document.getElementById('info');
+
+        cells.forEach(cell => {
+            cell.addEventListener('click', handleCellClick);
+        });
+
+        function setMode(mode) {
+            gameMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const diffSelector = document.getElementById('difficultySelector');
+            if (mode === 'ai') {
+                diffSelector.classList.add('show');
+            } else {
+                diffSelector.classList.remove('show');
+            }
+            
+            resetGame();
+        }
+
+        function setDifficulty(level) {
+            difficulty = level;
+            document.querySelectorAll('.difficulty-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            resetGame();
+        }
+
+        function handleCellClick(e) {
+            const clickedCell = e.target;
+            const clickedCellIndex = parseInt(clickedCell.getAttribute('data-index'));
+
+            if (board[clickedCellIndex] !== '' || !gameActive) {
+                return;
+            }
+
+            if (!gameStartTime) {
+                gameStartTime = Date.now();
+            }
+
+            makeMove(clickedCell, clickedCellIndex);
+        }
+
+        function makeMove(cell, index) {
+            
+            updateCell(cell, index);
+            
+            if (checkResult()) {
+                return;
+            }
+
+            if (gameMode === 'ai' && currentPlayer === 'O' && gameActive) {
+                setTimeout(aiMove, 500);
+            }
+        }
+
+        function updateCell(cell, index) {
+            board[index] = currentPlayer;
+            cell.textContent = currentPlayer;
+            cell.classList.add(currentPlayer.toLowerCase());
+        }
+
+        function aiMove() {
+            let move;
+            
+            if (difficulty === 'easy') {
+                move = getRandomMove();
+            } else if (difficulty === 'medium') {
+                move = Math.random() > 0.5 ? getBestMove() : getRandomMove();
+            } else {
+                move = getBestMove();
+            }
+
+            if (move !== -1) {
+                const cell = document.querySelector(`[data-index="${move}"]`);
+                makeMove(cell, move);
+            }
+        }
+
+        function getRandomMove() {
+            const availableMoves = board.map((val, idx) => val === '' ? idx : null).filter(val => val !== null);
+            return availableMoves.length > 0 ? availableMoves[Math.floor(Math.random() * availableMoves.length)] : -1;
+        }
+
+        function getBestMove() {
+            let bestScore = -Infinity;
+            let move = -1;
+
+            for (let i = 0; i < 9; i++) {
+                if (board[i] === '') {
+                    board[i] = 'O';
+                    let score = minimax(board, 0, false);
+                    board[i] = '';
+                    if (score > bestScore) {
+                        bestScore = score;
+                        move = i;
+                    }
+                }
+            }
+
+            return move;
+        }
+
+        function minimax(board, depth, isMaximizing) {
+            let result = checkWinner();
+            if (result !== null) {
+                return result === 'O' ? 10 - depth : result === 'X' ? depth - 10 : 0;
+            }
+
+            if (isMaximizing) {
+                let bestScore = -Infinity;
+                for (let i = 0; i < 9; i++) {
+                    if (board[i] === '') {
+                        board[i] = 'O';
+                        let score = minimax(board, depth + 1, false);
+                        board[i] = '';
+                        bestScore = Math.max(score, bestScore);
+                    }
+                }
+                return bestScore;
+            } else {
+                let bestScore = Infinity;
+                for (let i = 0; i < 9; i++) {
+                    if (board[i] === '') {
+                        board[i] = 'X';
+                        let score = minimax(board, depth + 1, true);
+                        board[i] = '';
+                        bestScore = Math.min(score, bestScore);
+                    }
+                }
+                return bestScore;
+            }
+        }
+
+        function checkWinner() {
+            for (let condition of winningConditions) {
+                const [a, b, c] = condition;
+                if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+                    return board[a];
+                }
+            }
+            return board.includes('') ? null : 'draw';
+        }
+
+        function checkResult() {
+            let roundWon = false;
+            let winningCells = [];
+
+            for (let i = 0; i < winningConditions.length; i++) {
+                const condition = winningConditions[i];
+                const a = board[condition[0]];
+                const b = board[condition[1]];
+                const c = board[condition[2]];
+
+                if (a === '' || b === '' || c === '') {
+                    continue;
+                }
+
+                if (a === b && b === c) {
+                    roundWon = true;
+                    winningCells = condition;
+                    break;
+                }
+            }
+
+            if (roundWon) {
+                const gameTime = ((Date.now() - gameStartTime) / 1000).toFixed(1);
+                infoDisplay.textContent = `🎉 ${currentPlayer} venceu em ${gameTime}s!`;
+                gameActive = false;
+                scores[currentPlayer]++;
+                totalGames++;
+                
+                if (!bestTime || parseFloat(gameTime) < bestTime) {
+                    bestTime = parseFloat(gameTime);
+                    document.getElementById('bestTime').textContent = bestTime + 's';
+                }
+                
+                updateScores();
+                highlightWinningCells(winningCells);
+                return true;
+            }
+
+            const roundDraw = !board.includes('');
+            if (roundDraw) {
+                infoDisplay.textContent = '🤝 Deu velha!';
+                gameActive = false;
+                scores.draw++;
+                totalGames++;
+                updateScores();
+                return true;
+            }
+
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            infoDisplay.textContent = `Vez do ${currentPlayer}`;
+            return false;
+        }
+
+        function highlightWinningCells(winningCells) {
+            const boardEl = document.getElementById('board');
+            const line = document.createElement('div');
+            line.classList.add('winning-line');
+            
+            const [a, b, c] = winningCells;
+            
+            if (a === 0 && b === 1 && c === 2) {
+                line.classList.add('horizontal');
+                line.style.top = '65px';
+                line.style.left = '0';
+            } else if (a === 3 && b === 4 && c === 5) {
+                line.classList.add('horizontal');
+                line.style.top = '195px';
+                line.style.left = '0';
+            } else if (a === 6 && b === 7 && c === 8) {
+                line.classList.add('horizontal');
+                line.style.top = '325px';
+                line.style.left = '0';
+            } else if (a === 0 && b === 3 && c === 6) {
+                line.classList.add('vertical');
+                line.style.top = '0';
+                line.style.left = '65px';
+            } else if (a === 1 && b === 4 && c === 7) {
+                line.classList.add('vertical');
+                line.style.top = '0';
+                line.style.left = '195px';
+            } else if (a === 2 && b === 5 && c === 8) {
+                line.classList.add('vertical');
+                line.style.top = '0';
+                line.style.left = '325px';
+            } else if (a === 0 && b === 4 && c === 8) {
+                line.classList.add('diagonal-right');
+                line.style.top = '0';
+                line.style.left = '65px';
+                line.style.transform = 'rotate(45deg)';
+            } else if (a === 2 && b === 4 && c === 6) {
+                line.classList.add('diagonal-left');
+                line.style.top = '0';
+                line.style.right = '65px';
+                line.style.transform = 'rotate(-45deg)';
+            }
+            
+            boardEl.appendChild(line);
+        }
+
+        function updateScores() {
+            document.getElementById('scoreX').textContent = scores.X;
+            document.getElementById('scoreO').textContent = scores.O;
+            document.getElementById('scoreDraw').textContent = scores.draw;
+            document.getElementById('totalGames').textContent = totalGames;
+        }
+
+        /* Função 'desfazer' removida conforme solicitação */
+
+        function resetGame() {
+            board = ['', '', '', '', '', '', '', '', ''];
+            currentPlayer = 'X';
+            gameActive = true;
+            gameStartTime = null;
+            infoDisplay.textContent = 'Vez do X';
+
+            cells.forEach(cell => {
+                cell.textContent = '';
+                cell.classList.remove('x', 'o');
+            });
+
+            const winningLine = document.querySelector('.winning-line');
+            if (winningLine) {
+                winningLine.remove();
+            }
+
+            updateUndoButton();
+        }
+
+        function resetScores() {
+            if (confirm('Tem certeza que deseja zerar o placar?')) {
+                scores = { X: 0, O: 0, draw: 0 };
+                totalGames = 0;
+                bestTime = null;
+                updateScores();
+                document.getElementById('bestTime').textContent = '--';
+                resetGame();
+            }
+        }
+    </script>
+</body>
+</html>
