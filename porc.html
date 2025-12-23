@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Porcentagem — Guia Matemático Completo</title>
+
+  <!-- MathJax -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
+      background: #fafafa;
+      color: #222;
+      max-width: 860px;
+      margin: 40px auto;
+      padding: 0 20px;
+      line-height: 1.75;
+    }
+
+    h1, h2 {
+      font-weight: 600;
+    }
+
+    h1 {
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 10px;
+    }
+
+    section {
+      margin-bottom: 45px;
+    }
+
+    .formula {
+      background: #fff;
+      border-left: 4px solid #444;
+      padding: 14px 18px;
+      margin: 14px 0;
+      font-size: 1.05rem;
+    }
+
+    .example {
+      background: #f3f3f3;
+      padding: 14px 18px;
+      margin-top: 10px;
+      font-size: 0.95rem;
+    }
+
+    footer {
+      margin-top: 60px;
+      font-size: 0.85rem;
+      color: #777;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Porcentagem — Guia Matemático com Resolução</h1>
+
+<section>
+  <h2>1. Calcular $p\%$ de um valor</h2>
+
+  <div class="formula">
+    $$R = V \cdot \frac{p}{100}$$
+  </div>
+
+  <div class="example">
+    <strong>Exemplo:</strong> Calcular $10\%$ de $500$.
+    $$R = 500 \cdot \frac{10}{100}$$
+    $$R = 500 \cdot 0{,}10$$
+    $$\boxed{R = 50}$$
+  </div>
+</section>
+
+<section>
+  <h2>2. Descobrir o valor total (base)</h2>
+
+  <div class="formula">
+    $$V = \frac{T}{p/100} = \frac{T \cdot 100}{p}$$
+  </div>
+
+  <div class="example">
+    <strong>Exemplo:</strong> Uma taxa de $450$ corresponde a $5\%$ do valor total.
+    $$V = \frac{450}{5/100}$$
+    $$V = \frac{450}{0{,}05}$$
+    $$\boxed{V = 9.000}$$
+  </div>
+</section>
+
+<section>
+  <h2>3. Descobrir a porcentagem</h2>
+
+  <div class="formula">
+    $$p = \frac{T}{V} \cdot 100$$
+  </div>
+
+  <div class="example">
+    <strong>Exemplo:</strong> $200$ é quantos porcento de $800$?
+    $$p = \frac{200}{800} \cdot 100$$
+    $$p = 0{,}25 \cdot 100$$
+    $$\boxed{p = 25\%}$$
+  </div>
+</section>
+
+<section>
+  <h2>4. Aumento percentual</h2>
+
+  <div class="formula">
+    $$V_f = V \cdot \left(1 + \frac{p}{100}\right)$$
+  </div>
+
+  <div class="example">
+    <strong>Exemplo:</strong> Aumentar $1.000$ em $12\%$.
+    $$V_f = 1.000 \cdot \left(1 + \frac{12}{100}\right)$$
+    $$V_f = 1.000 \cdot (1 + 0{,}12)$$
+    $$V_f = 1.000 \cdot 1{,}12$$
+    $$\boxed{V_f = 1.120}$$
+  </div>
+</section>
+
+<section>
+  <h2>5. Desconto percentual</h2>
+
+  <div class="formula">
+    $$V_f = V \cdot \left(1 - \frac{p}{100}\right)$$
+  </div>
+
+  <div class="example">
+    <strong>Exemplo:</strong> Aplicar desconto de $25\%$ sobre $800$.
+    $$V_f = 800 \cdot \left(1 - \frac{25}{100}\right)$$
+    $$V_f = 800 \cdot (1 - 0{,}25)$$
+    $$V_f = 800 \cdot 0{,}75$$
+    $$\boxed{V_f = 600}$$
+  </div>
+</section>
+
+<section>
+  <h2>6. Valor original antes do aumento</h2>
+
+  <div class="formula">
+    $$V = \frac{V_f}{1 + \frac{p}{100}}$$
+  </div>
+
+  <div class="example">
+    <strong>Exemplo:</strong> Após aumento de $20\%$, o valor passou a ser $1.200$.
+    $$V = \frac{1.200}{1 + \frac{20}{100}}$$
+    $$V = \frac{1.200}{1{,}20}$$
+    $$\boxed{V = 1.000}$$
+  </div>
+</section>
+
+<section>
+  <h2>7. Valor original antes do desconto</h2>
+
+  <div class="formula">
+    $$V = \frac{V_f}{1 - \frac{p}{100}}$$
+  </div>
+
+  <div class="example">
+    <strong>Exemplo:</strong> Após desconto de $10\%$, o valor ficou $900$.
+    $$V = \frac{900}{1 - \frac{10}{100}}$$
+    $$V = \frac{900}{0{,}90}$$
+    $$\boxed{V = 1.000}$$
+  </div>
+</section>
+
+<section>
+  <h2>8. Variação percentual</h2>
+
+  <div class="formula">
+    $$\Delta\% = \frac{V_f - V_i}{V_i} \cdot 100$$
+  </div>
+
+  <div class="example">
+    <strong>Exemplo:</strong> De $500$ para $650$.
+    $$\Delta\% = \frac{650 - 500}{500} \cdot 100$$
+    $$\Delta\% = \frac{150}{500} \cdot 100$$
+    $$\boxed{\Delta\% = 30\%}$$
+  </div>
+</section>
+
+<section>
+  <h2>9. Porcentagens sucessivas</h2>
+
+  <div class="formula">
+    $$(1 + a)(1 - b) \neq 1$$
+  </div>
+
+  <div class="example">
+    <strong>Exemplo:</strong> Aumento de $20\%$ seguido de desconto de $20\%$.
+    $$V = 1 \cdot 1{,}20 \cdot 0{,}80$$
+    $$V = 0{,}96$$
+    $$\boxed{\text{Perda real de } 4\%}$$
+  </div>
+</section>
+
+<footer>
+  Porcentagem — notação matemática formal • resolução passo a passo
+</footer>
+
+</body>
+</html>
