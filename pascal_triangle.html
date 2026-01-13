@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Triângulo de Pascal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: #e0e0e0;
+        }
+
+        h1 {
+            margin: 20px 0;
+            font-size: 2rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .controls {
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        label {
+            font-size: 1.1rem;
+        }
+
+        input[type="range"] {
+            width: 200px;
+            cursor: pointer;
+        }
+
+        .triangle {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .row {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .cell {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .cell:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .cell.active {
+            background: #ff6b6b;
+            border-color: #ff6b6b;
+            transform: scale(1.15);
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.6);
+        }
+
+        .cell.parent {
+            background: #4ecdc4;
+            border-color: #4ecdc4;
+            transform: scale(1.15);
+            box-shadow: 0 0 20px rgba(78, 205, 196, 0.6);
+        }
+
+        .instruction {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px 30px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Triângulo de Pascal</h1>
+    
+    <div class="controls">
+        <label for="rows">Linhas:</label>
+        <input type="range" id="rows" min="3" max="12" value="8">
+        <span id="rowCount">8</span>
+    </div>
+
+    <div class="triangle" id="triangle"></div>
+
+    <div class="instruction">
+        <strong>Como usar:</strong> Clique em qualquer número para ver quais números da linha anterior se somam para formá-lo. 
+        <span style="color: #4ecdc4;">■ Azul</span> = números que se somam | 
+        <span style="color: #ff6b6b;">■ Vermelho</span> = resultado
+    </div>
+
+    <script>
+        const slider = document.getElementById('rows');
+        const rowCount = document.getElementById('rowCount');
+        const triangleDiv = document.getElementById('triangle');
+        let activeCell = null;
+
+        function generatePascal(n) {
+            const triangle = [];
+            for (let i = 0; i < n; i++) {
+                triangle[i] = [];
+                for (let j = 0; j <= i; j++) {
+                    if (j === 0 || j === i) {
+                        triangle[i][j] = 1;
+                    } else {
+                        triangle[i][j] = triangle[i - 1][j - 1] + triangle[i - 1][j];
+                    }
+                }
+            }
+            return triangle;
+        }
+
+        function renderTriangle(n) {
+            const triangle = generatePascal(n);
+            triangleDiv.innerHTML = '';
+            
+            triangle.forEach((row, rowIndex) => {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'row';
+                
+                row.forEach((value, colIndex) => {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.textContent = value;
+                    cell.dataset.row = rowIndex;
+                    cell.dataset.col = colIndex;
+                    
+                    cell.addEventListener('click', function() {
+                        clearHighlights();
+                        
+                        if (rowIndex > 0) {
+                            this.classList.add('active');
+                            
+                            // Destacar os pais
+                            if (colIndex > 0) {
+                                const leftParent = document.querySelector(
+                                    `[data-row="${rowIndex - 1}"][data-col="${colIndex - 1}"]`
+                                );
+                                if (leftParent) leftParent.classList.add('parent');
+                            }
+                            
+                            if (colIndex < rowIndex) {
+                                const rightParent = document.querySelector(
+                                    `[data-row="${rowIndex - 1}"][data-col="${colIndex}"]`
+                                );
+                                if (rightParent) rightParent.classList.add('parent');
+                            }
+                        }
+                    });
+                    
+                    rowDiv.appendChild(cell);
+                });
+                
+                triangleDiv.appendChild(rowDiv);
+            });
+        }
+
+        function clearHighlights() {
+            document.querySelectorAll('.cell').forEach(cell => {
+                cell.classList.remove('active', 'parent');
+            });
+        }
+
+        slider.addEventListener('input', function() {
+            rowCount.textContent = this.value;
+            renderTriangle(parseInt(this.value));
+        });
+
+        // Inicializar
+        renderTriangle(8);
+    </script>
+</body>
+</html>
