@@ -1,3 +1,8 @@
+https://chatgpt.com/share/699e0911-0a14-8008-a20b-1a1094bd17aa
+https://chatgpt.com/share/699e0940-d928-8008-aecc-f2e6c3395b37
+
+
+
 module MissingPatterns
 
 export plotmissing
@@ -182,3 +187,4 @@ function summary_missing(df)
 end
 
 end # module
+
