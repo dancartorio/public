@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLICK — O Evento</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Instrument+Serif:ital@0;1&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #f5c842;
+    --orange: #ff6b1a;
+    --deep: #0a0a0f;
+    --mid: #12121a;
+    --light: #f0ede5;
+    --muted: #888;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--deep);
+    color: var(--light);
+    font-family: 'Space Mono', monospace;
+    cursor: none;
+    overflow-x: hidden;
+  }
+
+  /* CUSTOM CURSOR */
+  #cursor {
+    position: fixed;
+    width: 14px; height: 14px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
+    mix-blend-mode: difference;
+  }
+  #cursor.big {
+    width: 60px; height: 60px;
+    background: var(--orange);
+  }
+
+  /* REMOTE CONTROL */
+  #remote {
+    position: fixed;
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .remote-body {
+    background: linear-gradient(160deg, #2a2a35 0%, #111118 100%);
+    border: 1px solid #333;
+    border-radius: 20px;
+    padding: 20px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    box-shadow: 0 0 40px rgba(245,200,66,0.1), inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+
+  .remote-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .r-btn {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    border: none;
+    cursor: none;
+    font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .r-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+
+  .r-btn:hover::after { opacity: 1; }
+  .r-btn:active { transform: scale(0.9); }
+
+  .r-ff  { background: #1a1a25; border: 1px solid #333; color: var(--gold); }
+  .r-rw  { background: #1a1a25; border: 1px solid #333; color: var(--gold); }
+  .r-pause { background: var(--gold); color: var(--deep); width: 46px; height: 46px; font-size: 22px; }
+  .r-mute { background: #1a1a25; border: 1px solid #333; color: #aaa; font-size: 14px; }
+
+  .r-divider {
+    width: 30px; height: 1px;
+    background: #2a2a35;
+  }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    padding: 40px;
+    text-align: center;
+  }
+
+  .tv-static {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    opacity: 0.5;
+    pointer-events: none;
+    animation: staticShift 0.15s steps(1) infinite;
+  }
+
+  @keyframes staticShift {
+    0%   { transform: translate(0,0); }
+    25%  { transform: translate(-1px, 1px); }
+    50%  { transform: translate(1px, -1px); }
+    75%  { transform: translate(-1px, -1px); }
+    100% { transform: translate(1px, 1px); }
+  }
+
+  .scanlines {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.08) 2px,
+      rgba(0,0,0,0.08) 4px
+    );
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 6px;
+    color: var(--orange);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 1s 0.3s forwards;
+  }
+
+  h1.click-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(100px, 22vw, 280px);
+    line-height: 0.85;
+    letter-spacing: -2px;
+    color: var(--light);
+    position: relative;
+    opacity: 0;
+    animation: fadeUp 1s 0.5s forwards;
+    cursor: none;
+  }
+
+  h1.click-title span {
+    display: inline-block;
+    transition: transform 0.1s, color 0.2s;
+  }
+
+  h1.click-title:hover span { color: var(--gold); }
+
+  .glitch-line {
+    position: absolute;
+    left: 0; right: 0;
+    height: 3px;
+    background: var(--orange);
+    top: 45%;
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: glitchScan 4s 2s infinite;
+  }
+
+  @keyframes glitchScan {
+    0%   { transform: scaleX(0); opacity: 1; top: 20%; }
+    50%  { transform: scaleX(1); opacity: 0.8; }
+    51%  { transform: scaleX(1); top: 80%; }
+    100% { transform: scaleX(0); opacity: 0; }
+  }
+
+  .hero-sub {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: clamp(16px, 2.5vw, 26px);
+    color: var(--muted);
+    margin-top: 20px;
+    max-width: 600px;
+    opacity: 0;
+    animation: fadeUp 1s 0.7s forwards;
+    line-height: 1.5;
+  }
+
+  .hero-sub em { color: var(--gold); font-style: normal; }
+
+  .hero-date {
+    margin-top: 48px;
+    display: flex;
+    gap: 40px;
+    opacity: 0;
+    animation: fadeUp 1s 1s forwards;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .date-item { text-align: center; }
+  .date-item .val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    line-height: 1;
+    color: var(--gold);
+    display: block;
+  }
+  .date-item .key {
+    font-size: 9px;
+    letter-spacing: 4px;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .hero-cta {
+    margin-top: 52px;
+    opacity: 0;
+    animation: fadeUp 1s 1.2s forwards;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .btn-primary {
+    background: var(--gold);
+    color: var(--deep);
+    border: none;
+    padding: 16px 44px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 3px;
+    cursor: none;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--orange);
+    transform: translateX(-100%);
+    transition: transform 0.3s;
+    z-index: 0;
+  }
+  .btn-primary:hover::before { transform: translateX(0); }
+  .btn-primary span { position: relative; z-index: 1; }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--light);
+    border: 1px solid #333;
+    padding: 16px 44px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 3px;
+    cursor: none;
+    transition: all 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* TIME CONTROLS SECTION */
+  #controls {
+    padding: 120px 40px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 5px;
+    color: var(--orange);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 7vw, 80px);
+    line-height: 1;
+    margin-bottom: 60px;
+  }
+
+  /* TIME MACHINE INTERACTIVE */
+  .time-machine {
+    background: var(--mid);
+    border: 1px solid #222;
+    border-radius: 4px;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .time-machine::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--orange), var(--gold), var(--orange));
+    background-size: 200%;
+    animation: shimmer 3s linear infinite;
+  }
+
+  @keyframes shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  .tm-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 30px;
+  }
+
+  .tm-led {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #0f0;
+    box-shadow: 0 0 8px #0f0;
+    animation: blink 2s infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .tm-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 4px;
+    color: var(--muted);
+  }
+
+  .tm-display {
+    background: #000;
+    border: 1px solid #1a1a1a;
+    border-radius: 4px;
+    padding: 24px 28px;
+    margin-bottom: 24px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  .tm-scene {
+    font-size: clamp(14px, 2vw, 18px);
+    line-height: 1.7;
+    color: #a0f090;
+    min-height: 90px;
+    transition: opacity 0.3s;
+  }
+
+  .tm-controls-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .tm-btn {
+    background: #1a1a25;
+    border: 1px solid #2a2a3a;
+    color: var(--gold);
+    padding: 12px 20px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 2px;
+    cursor: none;
+    border-radius: 3px;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .tm-btn:hover {
+    background: #252535;
+    border-color: var(--gold);
+    transform: translateY(-2px);
+  }
+
+  .tm-btn:active { transform: translateY(0); }
+
+  .tm-chapter {
+    margin-left: auto;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--muted);
+  }
+
+  /* LINEUP */
+  #lineup {
+    padding: 100px 40px;
+    background: var(--mid);
+  }
+
+  .lineup-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .lineup-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1px;
+    background: #1a1a1a;
+    border: 1px solid #1a1a1a;
+    margin-top: 60px;
+  }
+
+  .lineup-item {
+    background: var(--mid);
+    padding: 32px 28px;
+    position: relative;
+    overflow: hidden;
+    cursor: none;
+    transition: background 0.2s;
+  }
+
+  .lineup-item:hover { background: #1a1a25; }
+
+  .lineup-item:hover .li-arrow { transform: translate(4px, -4px); }
+
+  .li-time {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--orange);
+    margin-bottom: 16px;
+  }
+
+  .li-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    line-height: 1.1;
+    margin-bottom: 8px;
+    color: var(--light);
+  }
+
+  .li-desc {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .li-arrow {
+    position: absolute;
+    top: 28px; right: 28px;
+    font-size: 18px;
+    color: var(--gold);
+    transition: transform 0.2s;
+  }
+
+  .li-tag {
+    display: inline-block;
+    margin-top: 16px;
+    font-size: 9px;
+    letter-spacing: 3px;
+    padding: 5px 10px;
+    background: rgba(245,200,66,0.1);
+    color: var(--gold);
+    border: 1px solid rgba(245,200,66,0.3);
+    text-transform: uppercase;
+  }
+
+  /* TIMER */
+  #countdown {
+    padding: 100px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .countdown-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(255,107,26,0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .countdown-wrap {
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .countdown-grid {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 50px;
+    flex-wrap: wrap;
+  }
+
+  .cd-box {
+    text-align: center;
+    min-width: 100px;
+  }
+
+  .cd-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(60px, 10vw, 100px);
+    line-height: 1;
+    color: var(--light);
+    display: block;
+    position: relative;
+  }
+
+  .cd-num::after {
+    content: attr(data-val);
+    position: absolute;
+    left: 0; right: 0;
+    color: var(--orange);
+    clip-path: inset(0 0 60% 0);
+    opacity: 0.3;
+  }
+
+  .cd-label {
+    font-size: 9px;
+    letter-spacing: 4px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-top: 8px;
+  }
+
+  .cd-sep {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 80px;
+    color: var(--gold);
+    align-self: flex-start;
+    margin-top: 8px;
+    opacity: 0.5;
+  }
+
+  /* REGISTER */
+  #register {
+    padding: 100px 40px;
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .reg-form {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: left;
+  }
+
+  .reg-form input, .reg-form select {
+    background: var(--mid);
+    border: 1px solid #2a2a35;
+    color: var(--light);
+    padding: 16px 20px;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+    cursor: none;
+  }
+
+  .reg-form input:focus, .reg-form select:focus {
+    border-color: var(--gold);
+  }
+
+  .reg-form input::placeholder {
+    color: #444;
+  }
+
+  .reg-form select option { background: var(--mid); }
+
+  .reg-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .reg-submit {
+    width: 100%;
+    margin-top: 10px;
+    padding: 18px;
+    background: var(--gold);
+    border: none;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 4px;
+    color: var(--deep);
+    cursor: none;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .reg-submit:hover { background: var(--orange); color: var(--light); }
+
+  .reg-submit:active { transform: scale(0.98); }
+
+  .reg-note {
+    text-align: center;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-top: 16px;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid #1a1a1a;
+    padding: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  footer .f-brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 4px;
+    color: var(--gold);
+  }
+
+  footer .f-copy {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--muted);
+  }
+
+  /* PAUSE OVERLAY */
+  #pause-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 8000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  #pause-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .pause-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+    animation: pulsePause 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulsePause {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+
+  .pause-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 60px;
+    letter-spacing: 8px;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+
+  .pause-sub {
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--muted);
+  }
+
+  /* SPEED OVERLAY */
+  #speed-indicator {
+    position: fixed;
+    top: 30px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--gold);
+    color: var(--deep);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 4px;
+    padding: 10px 28px;
+    z-index: 7000;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+
+  #speed-indicator.show { opacity: 1; }
+
+  /* FF effect */
+  body.fast-forward * {
+    animation-duration: 0.1s !important;
+    transition-duration: 0.05s !important;
+  }
+  body.fast-forward {
+    filter: saturate(2) brightness(1.1);
+  }
+
+  /* RW effect */
+  body.rewind {
+    filter: hue-rotate(180deg) saturate(1.5);
+  }
+
+  /* SCROLL REVEAL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s, transform 0.8s;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 600px) {
+    #remote { display: none; }
+    .reg-row { grid-template-columns: 1fr; }
+    footer { flex-direction: column; text-align: center; }
+    .tm-controls-row { justify-content: center; }
+    .tm-chapter { margin-left: 0; width: 100%; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cursor"></div>
+
+<!-- PAUSE OVERLAY -->
+<div id="pause-overlay">
+  <div class="pause-icon">⏸</div>
+  <div class="pause-text">PAUSADO</div>
+  <div class="pause-sub">APERTE PLAY PARA CONTINUAR</div>
+</div>
+
+<!-- SPEED INDICATOR -->
+<div id="speed-indicator" id="speed-indicator"></div>
+
+<!-- REMOTE CONTROL -->
+<div id="remote">
+  <div class="remote-body">
+    <div class="remote-label">CTRL</div>
+    <button class="r-btn r-ff" id="btn-ff" title="Avançar">⏩</button>
+    <button class="r-btn r-pause" id="btn-pause" title="Pausar">⏸</button>
+    <button class="r-btn r-rw" id="btn-rw" title="Retroceder">⏪</button>
+    <div class="r-divider"></div>
+    <button class="r-btn r-mute" id="btn-mute" title="Mudo">🔇</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="tv-static"></div>
+  <div class="scanlines"></div>
+  <p class="hero-eyebrow">🎬 Uma Noite Fora do Tempo</p>
+  <h1 class="click-title" id="clickTitle">
+    <span>C</span><span>L</span><span>I</span><span>C</span><span>K</span>
+    <div class="glitch-line"></div>
+  </h1>
+  <p class="hero-sub">E se você pudesse <em>pausar, avançar e retroceder</em> a melhor festa do ano?</p>
+  <div class="hero-date">
+    <div class="date-item">
+      <span class="val">14</span>
+      <span class="key">Junho</span>
+    </div>
+    <div class="date-item">
+      <span class="val">2025</span>
+      <span class="key">Ano</span>
+    </div>
+    <div class="date-item">
+      <span class="val">22H</span>
+      <span class="key">Início</span>
+    </div>
+    <div class="date-item">
+      <span class="val">SP</span>
+      <span class="key">Cidade</span>
+    </div>
+  </div>
+  <div class="hero-cta">
+    <button class="btn-primary" onclick="document.getElementById('register').scrollIntoView({behavior:'smooth'})">
+      <span>▶ GARANTIR INGRESSO</span>
+    </button>
+    <button class="btn-ghost" onclick="document.getElementById('controls').scrollIntoView({behavior:'smooth'})">SAIBA MAIS</button>
+  </div>
+</section>
+
+<!-- TIME MACHINE CONTROLS -->
+<section id="controls">
+  <p class="section-label reveal">// Interface de Controle</p>
+  <h2 class="section-title reveal">Use o<br><span style="color:var(--gold)">Controle Remoto</span></h2>
+
+  <div class="time-machine reveal">
+    <div class="tm-header">
+      <div class="tm-led"></div>
+      <div class="tm-title">MÁQUINA DO TEMPO — MODO EVENTO</div>
+    </div>
+
+    <div class="tm-display">
+      <div class="tm-scene" id="tmScene">
+        &gt; Carregando memórias do evento... <span style="animation:blink 1s infinite;display:inline-block">_</span>
+      </div>
+    </div>
+
+    <div class="tm-controls-row">
+      <button class="tm-btn" id="tm-prev">⏮ CAPÍTULO ANTERIOR</button>
+      <button class="tm-btn" id="tm-play">▶ REPRODUZIR</button>
+      <button class="tm-btn" id="tm-next">PRÓXIMO CAPÍTULO ⏭</button>
+      <div class="tm-chapter" id="tmChap">CAP. 1 / 5</div>
+    </div>
+  </div>
+</section>
+
+<!-- LINEUP -->
+<section id="lineup">
+  <div class="lineup-inner">
+    <p class="section-label reveal">// Programação</p>
+    <h2 class="section-title reveal">O Que<br><span style="color:var(--gold)">Acontece</span></h2>
+
+    <div class="lineup-grid reveal">
+      <div class="lineup-item">
+        <div class="li-time">22:00 — ABERTURA</div>
+        <div class="li-name">INTRODUÇÃO AO CONTROLE</div>
+        <div class="li-desc">Cada convidado recebe seu próprio controle personalizado. A noite começa aqui.</div>
+        <span class="li-tag">Obrigatório</span>
+        <div class="li-arrow">↗</div>
+      </div>
+      <div class="lineup-item">
+        <div class="li-time">23:00 — ATO I</div>
+        <div class="li-name">FAST FORWARD DJ SET</div>
+        <div class="li-desc">Beats que aceleram o tempo. Dance até perder o controle do relógio.</div>
+        <span class="li-tag">Música</span>
+        <div class="li-arrow">↗</div>
+      </div>
+      <div class="lineup-item">
+        <div class="li-time">00:30 — ATO II</div>
+        <div class="li-name">PAUSE & BREATHE</div>
+        <div class="li-desc">Zona de descompressão sensorial. Um momento fora do loop.</div>
+        <span class="li-tag">Experiência</span>
+        <div class="li-arrow">↗</div>
+      </div>
+      <div class="lineup-item">
+        <div class="li-time">01:30 — ATO III</div>
+        <div class="li-name">REWIND HOUR</div>
+        <div class="li-desc">Os grandes clássicos voltam. Músicas que você queria ter ouvido de novo.</div>
+        <span class="li-tag">Nostalgia</span>
+        <div class="li-arrow">↗</div>
+      </div>
+      <div class="lineup-item">
+        <div class="li-time">03:00 — CLÍMAX</div>
+        <div class="li-name">THE FINAL CLICK</div>
+        <div class="li-desc">A última cena. O grand finale que ninguém vai querer avançar.</div>
+        <span class="li-tag">Não perca</span>
+        <div class="li-arrow">↗</div>
+      </div>
+      <div class="lineup-item">
+        <div class="li-time">04:00 — EPÍLOGO</div>
+        <div class="li-name">AFTER HOURS</div>
+        <div class="li-desc">Para quem nunca quer que a noite termine. Off-limits para quem saiu cedo.</div>
+        <span class="li-tag">Secreto</span>
+        <div class="li-arrow">↗</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COUNTDOWN -->
+<section id="countdown">
+  <div class="countdown-bg"></div>
+  <div class="countdown-wrap">
+    <p class="section-label reveal">// Contagem Regressiva</p>
+    <h2 class="section-title reveal">O TEMPO<br><span style="color:var(--gold)">NÃO PARA</span></h2>
+    <div class="countdown-grid">
+      <div class="cd-box">
+        <span class="cd-num" id="cd-days">00</span>
+        <div class="cd-label">Dias</div>
+      </div>
+      <div class="cd-sep">:</div>
+      <div class="cd-box">
+        <span class="cd-num" id="cd-hours">00</span>
+        <div class="cd-label">Horas</div>
+      </div>
+      <div class="cd-sep">:</div>
+      <div class="cd-box">
+        <span class="cd-num" id="cd-mins">00</span>
+        <div class="cd-label">Minutos</div>
+      </div>
+      <div class="cd-sep">:</div>
+      <div class="cd-box">
+        <span class="cd-num" id="cd-secs">00</span>
+        <div class="cd-label">Segundos</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REGISTER -->
+<section id="register">
+  <p class="section-label reveal">// Reserva de Lugar</p>
+  <h2 class="section-title reveal">GARANTIR<br><span style="color:var(--gold)">MEU CLICK</span></h2>
+  <p class="hero-sub reveal" style="text-align:center;margin-bottom:0;font-size:15px">Não perca o controle. Reserve agora antes que o tempo avance sem você.</p>
+
+  <form class="reg-form reveal" onsubmit="handleSubmit(event)">
+    <div class="reg-row">
+      <input type="text" placeholder="NOME" required />
+      <input type="text" placeholder="SOBRENOME" required />
+    </div>
+    <input type="email" placeholder="EMAIL" required />
+    <div class="reg-row">
+      <input type="tel" placeholder="TELEFONE" />
+      <select>
+        <option value="" disabled selected>TIPO DE INGRESSO</option>
+        <option>▶ PLAY — Entrada Geral</option>
+        <option>⏩ FAST FORWARD — VIP</option>
+        <option>⏸ PAUSE — Camarote</option>
+      </select>
+    </div>
+    <button type="submit" class="reg-submit" id="regBtn">
+      ▶ CLIQUE AQUI PARA GARANTIR
+    </button>
+    <p class="reg-note">LOTES LIMITADOS · SEM REEMBOLSO · 18+ APENAS</p>
+  </form>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="f-brand">CLICK</div>
+  <div class="f-copy">© 2025 CLICK EVENTS — TODOS OS DIREITOS RESERVADOS</div>
+</footer>
+
+<script>
+// ── CURSOR ──
+const cursor = document.getElementById('cursor');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top = e.clientY + 'px';
+});
+document.querySelectorAll('button, a, input, select').forEach(el => {
+  el.addEventListener('mouseenter', () => cursor.classList.add('big'));
+  el.addEventListener('mouseleave', () => cursor.classList.remove('big'));
+});
+
+// ── TITLE LETTERS ──
+document.querySelectorAll('#clickTitle span').forEach((span, i) => {
+  span.addEventListener('mouseenter', () => {
+    span.style.transform = `translateY(${(Math.random()-0.5)*30}px) rotate(${(Math.random()-0.5)*15}deg)`;
+    span.style.color = Math.random() > 0.5 ? 'var(--gold)' : 'var(--orange)';
+  });
+  span.addEventListener('mouseleave', () => {
+    span.style.transform = '';
+    span.style.color = '';
+  });
+});
+
+// ── SCROLL REVEAL ──
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting) { e.target.classList.add('visible'); }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ── COUNTDOWN ──
+const eventDate = new Date('2025-06-14T22:00:00');
+function updateCountdown() {
+  const now = new Date();
+  const diff = eventDate - now;
+  if(diff <= 0) { return; }
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  const fmt = n => String(n).padStart(2,'0');
+  ['days','hours','mins','secs'].forEach((id, i) => {
+    const el = document.getElementById('cd-' + id);
+    const val = fmt([d,h,m,s][i]);
+    el.textContent = val;
+    el.setAttribute('data-val', val);
+  });
+}
+setInterval(updateCountdown, 1000);
+updateCountdown();
+
+// ── TIME MACHINE ──
+const chapters = [
+  { ch: 1, text: `> CAPÍTULO 01: A CHEGADA\n\n"O portão abre. Você recebe o controle nas mãos.\nA noite ainda não começou — mas já é inesquecível."` },
+  { ch: 2, text: `> CAPÍTULO 02: FAST FORWARD\n\n"O DJ sobe o BPM. O tempo colapsa.\nVocê dança três horas em trinta minutos\ne quer que dure para sempre."` },
+  { ch: 3, text: `> CAPÍTULO 03: PAUSE\n\n"Tudo congela. A música para.\nPor um segundo, o universo todo pertence a você.\nNão há passado. Não há futuro. Só agora."` },
+  { ch: 4, text: `> CAPÍTULO 04: REWIND\n\n"Os clássicos voltam — aqueles que moldaram quem você é.\nVocê ri, você chora, você canta mais alto\ndo que deveria."` },
+  { ch: 5, text: `> CAPÍTULO 05: THE FINAL CLICK\n\n"A última faixa. A última dança.\nVocê fecha os olhos e pensa:\n'Eu precisava de mais uma vida para aproveitar isso.'\"` }
+];
+
+let currentChapter = 0;
+const sceneEl = document.getElementById('tmScene');
+const chapEl = document.getElementById('tmChap');
+
+function typeText(text, el, cb) {
+  el.style.opacity = '0';
+  setTimeout(() => {
+    el.innerHTML = '';
+    el.style.opacity = '1';
+    let i = 0;
+    const interval = setInterval(() => {
+      el.innerHTML = text.slice(0, i).replace(/\n/g,'<br>') + '<span style="animation:blink 0.8s infinite;display:inline-block">_</span>';
+      i++;
+      if(i > text.length) { clearInterval(interval); if(cb) cb(); }
+    }, 18);
+  }, 300);
+}
+
+function renderChapter(idx) {
+  const c = chapters[idx];
+  chapEl.textContent = `CAP. ${c.ch} / ${chapters.length}`;
+  typeText(c.text, sceneEl);
+}
+
+document.getElementById('tm-play').addEventListener('click', () => renderChapter(currentChapter));
+document.getElementById('tm-next').addEventListener('click', () => {
+  currentChapter = (currentChapter + 1) % chapters.length;
+  renderChapter(currentChapter);
+});
+document.getElementById('tm-prev').addEventListener('click', () => {
+  currentChapter = (currentChapter - 1 + chapters.length) % chapters.length;
+  renderChapter(currentChapter);
+});
+
+setTimeout(() => renderChapter(0), 800);
+
+// ── REMOTE CONTROL ──
+let paused = false;
+let muted = false;
+const pauseOverlay = document.getElementById('pause-overlay');
+const speedEl = document.getElementById('speed-indicator');
+
+function showSpeed(msg) {
+  speedEl.textContent = msg;
+  speedEl.classList.add('show');
+  setTimeout(() => speedEl.classList.remove('show'), 1500);
+}
+
+document.getElementById('btn-pause').addEventListener('click', () => {
+  paused = !paused;
+  pauseOverlay.classList.toggle('active', paused);
+  document.getElementById('btn-pause').textContent = paused ? '▶' : '⏸';
+  if(!paused) showSpeed('▶ RESUMINDO...');
+});
+
+document.getElementById('btn-ff').addEventListener('click', () => {
+  document.body.classList.add('fast-forward');
+  showSpeed('⏩ FAST FORWARD ×2');
+  setTimeout(() => document.body.classList.remove('fast-forward'), 2000);
+  window.scrollBy({ top: 400, behavior: 'smooth' });
+});
+
+document.getElementById('btn-rw').addEventListener('click', () => {
+  document.body.classList.add('rewind');
+  showSpeed('⏪ REBOBINANDO...');
+  setTimeout(() => document.body.classList.remove('rewind'), 2000);
+  window.scrollBy({ top: -400, behavior: 'smooth' });
+});
+
+document.getElementById('btn-mute').addEventListener('click', () => {
+  muted = !muted;
+  document.getElementById('btn-mute').textContent = muted ? '🔊' : '🔇';
+  showSpeed(muted ? '🔊 SOM LIGADO' : '🔇 MUDO');
+  if(muted) {
+    document.body.style.filter = 'grayscale(0.8)';
+  } else {
+    document.body.style.filter = '';
+  }
+});
+
+// ── KEYBOARD SHORTCUTS ──
+document.addEventListener('keydown', e => {
+  if(e.code === 'Space' && e.target.tagName !== 'INPUT') {
+    e.preventDefault();
+    document.getElementById('btn-pause').click();
+  }
+  if(e.code === 'ArrowRight') document.getElementById('btn-ff').click();
+  if(e.code === 'ArrowLeft') document.getElementById('btn-rw').click();
+});
+
+// ── REGISTER FORM ──
+function handleSubmit(e) {
+  e.preventDefault();
+  const btn = document.getElementById('regBtn');
+  btn.textContent = '⏳ PROCESSANDO...';
+  btn.style.background = 'var(--muted)';
+  setTimeout(() => {
+    btn.textContent = '✓ CLICK GARANTIDO!';
+    btn.style.background = '#2a9d4e';
+    btn.style.color = '#fff';
+  }, 2000);
+}
+
+// ── CLICK RIPPLE ──
+document.addEventListener('click', e => {
+  const ripple = document.createElement('div');
+  ripple.style.cssText = `
+    position:fixed;
+    left:${e.clientX}px;top:${e.clientY}px;
+    width:4px;height:4px;
+    background:var(--gold);
+    border-radius:50%;
+    pointer-events:none;
+    z-index:9998;
+    transform:translate(-50%,-50%);
+    animation:rippleAnim 0.6s ease-out forwards;
+  `;
+  document.body.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 600);
+});
+
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes rippleAnim {
+    from { transform: translate(-50%,-50%) scale(1); opacity:1; }
+    to { transform: translate(-50%,-50%) scale(20); opacity:0; }
+  }
+`;
+document.head.appendChild(style);
+</script>
+</body>
+</html>
