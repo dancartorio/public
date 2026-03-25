@@ -1,3 +1,5 @@
+https://claude.ai/share/02534904-55a8-4d09-82b5-68fc9138d3f4
+
 # =============================================================================
 # Análise de Teoria de Filas — 2ª Serventia Registral de Petrolina/PE
 # Modelo: M/G/c (aproximação Allen-Cunneen)
